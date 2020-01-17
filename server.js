@@ -3,7 +3,8 @@ const
     expressHandlebars = require('express-handlebars'),
     bodyParser = require('body-parser'),
     routing = require('./routes'),
-    session = require('express-session');
+    session = require('express-session'),
+    path = require('path');
 
 require('dotenv').config();
 
@@ -22,13 +23,14 @@ server.use(session({
     saveUninitialized: true,
     resave: false
 }));
-server.use(express.static('public')); //bei dateiaufruf in html datei, darf der Public ordner nicht angegeben werden zb. /css/style.css obwohl die datei in public liegt
+server.use(express.static(path.join(__dirname, 'public'))); //für statische dateien die an die browser ausgeliefert werden sollen, css/js/img prefix public im Pfad weg lassen
+server.use(express.static(path.join(__dirname, 'node_modules'))); // für css in modules
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(bodyParser.json());
 
 server.use('/', routing);
 server.use(loggerMiddleware);
-server.set('viewDir', 'views');
+server.set('viewDir', path.join(__dirname,'views'));
 server.set('view engine', 'html');
 
 server.engine('html', expressHandlebars({
