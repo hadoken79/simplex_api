@@ -30,7 +30,7 @@ server.use(bodyParser.json());
 
 server.use('/', routing);
 server.use(loggerMiddleware);
-server.set('viewDir', path.join(__dirname,'views'));
+server.set('viewDir', path.join(__dirname, 'views'));
 server.set('view engine', 'html');
 
 server.engine('html', expressHandlebars({
@@ -40,5 +40,5 @@ server.engine('html', expressHandlebars({
 }));
 
 server.listen(port, () => {
-    console.log('Express listening at port ' + port);
+    console.log('Server now listening at port ' + port);
 });
