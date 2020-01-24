@@ -1,1 +1,0 @@
-const simplexService = require('../services/simplexService');

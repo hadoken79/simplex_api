@@ -1,98 +1,130 @@
-const
-    storage = require('./storageService'),
-    request = require('request-promise');
+const storage = require("./storageService"),
+  request = require('request-promise'),
+  fs = require("fs");
 
-require('dotenv').config();
+require("dotenv").config();
+
 
 const api = process.env.API;
-let token = storage.readTokens; //müssen über file geregelt werden noch unklar ob StorageService oder andere
-let refreshToken = process.env.REFRESHTOKEN;
-
-
+let token = '';
+let refToken = '';
 
 const getAccessToken = (req, res) => {
 
-    //with user credentails
-    let options = {
-        uri: `${api}/login`,
-        form: {
-            username: process.env.USER,
-            password: process.env.PASSWORD
-        },
-        headers: {
-            Accept: "application/json"
-        },
-        json: true
-    }
+  //with user credentails
+  let options = {
+    uri: `${api}/login`,
+    form: {
+      username: process.env.USER,
+      password: process.env.PASSWORD
+    },
+    headers: {
+      Accept: "application/json"
+    },
+    json: true
+  };
 
-    request.post(options)
-        .then(tokenResponse => {
-            console.log(tokenResponse);
-            token = tokenResponse.access_token;
-            refToken = tokenResponse.refresh_token;
-            res.send('okily dokily')
-        })
-        .catch(err => {
-            console.log(err.message);
-        })
-}
+  return request
+    .post(options)
+    .then(tokenResponse => {
+      console.log(tokenResponse);
+      console.log('got me a new token');
+      token = tokenResponse.access_token;
+      refToken = tokenResponse.refresh_token;
+      return token;
+    })
+    .catch(err => {
+      console.log('failed somehow to create a token');
+      console.log(err.message);
+      return err.message;
+    });
+};
 
 const refreshAccessToken = () => {
+  //if refresh fails, get new token
+  let options = {
+    uri: `${api}/refresh_token`,
+    headers: {
+      Authorization: `Bearer ${refreshToken}`,
+      Accept: "application/json"
+    },
+    json: true
+  };
 
-    //if refresh fails, get new token
-    let options = {
-        uri: `${api}/refresh_token`,
-        headers: {
-            Authorization: `Bearer ${refreshToken}`,
-            Accept: "application/json"
-        },
-        json: true
-    }
+  request
+    .post(options)
+    .then(tokenResponse => {
+      console.log(tokenResponse);
+      console.log('successfully refreshed Token');
+      token = tokenResponse.access_token;
+      refToken = tokenResponse.refresh_token;
+    })
+    .catch(err => {
+      if (err.statusCode === 401) {
+        console.log('not able to refreshed Token');
+        console.log('try to get a new one');
+        getAccessToken();
+      }
+    });
+};
 
-    request.post(options)
-        .then(tokenResponse => {
-            console.log(tokenResponse);
-            token = tokenResponse.access_token;
-            refToken = tokenResponse.refresh_token;
-            res.send('okily dokily! Got a Refresh-Token')
-        })
-        .catch(err => {
-            if (err.statusCode === 401) {
-                getAccessToken();
-            }
+const getProjects = () => {
+  //if token is expired try refresh
 
-        })
+  let options = {
+    uri: `${api}/api/v1/channels/1023/projects?page=1&size=2`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json"
+    },
+    json: true
+  };
 
-}
+  request
+    .get(options)
+    .then(response => {
+      console.log(response);
+    })
+    .catch(err => {
+      console.log(err.statusMessage);
+      console.log(err.statusCode);
+      if (err.statusCode === 401) {
+        refreshAccessToken();
+      }
+    });
 
+};
 
-const getProjectData = (req, res) => {
-    //if token is expired try refresh
-    let options = {
-        uri: `${api}/api/v1/channels/1023/projects?page=1&size=2`,
-        headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json"
-        },
-        json: true
-    }
+const testCall = () => {
 
-    request.get(options)
-        .then(response => {
-            console.log(response);
-            res.send('okily dokily!');
-        })
-        .catch(err => {
-            console.log(err.statusMessage);
-            console.log(err.statusCode);
-            if (err.statusCode === 401) {
-                refreshAccessToken();
-            }
+  let options = {
+    uri: `${api}/api/v1/channels/1023/projects?page=1&size=2`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json"
+    },
+    json: true
+  };
 
-        })
+  request
+    .get(options)
+    .then(response => {
+      console.log(response);
+      console.log('accepted');
+    })
+    .catch(err => {
+      console.log(err.statusMessage);
+      console.log(err.statusCode);
+      console.log('token rejected');
+      if (err.statusCode === 401) {
+        console.log('trying to refresh');
+        refreshAccessToken();
+      }
+    });
+
 }
 
 module.exports = {
-    getAccessToken,
-    getProjectData
-}
+  getProjects,
+  testCall
+};
