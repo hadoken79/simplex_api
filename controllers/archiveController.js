@@ -3,9 +3,20 @@ const simplexService = require('../services/simplexService');
 
 const renderArchive = (req, res) => {
 
-    simplexService.testCall();
+
+    simplexService.testCall()
+        .then((message) => {
+            res.send(message);
+        })
+        .catch(err => {
+            //hier kann umgeleitet werden, falls Token tot.
+            res.send(err.response);
+        })
+
+
+
     /*
-    simplexService.getProjects(/*daten wie Bereich, channel und co*/)
+    simplexService.getProjects(/*daten wie Bereich, channel und co)
         .then(data => {
         res.render('archive', {
             title: 'Simplex-Api',
@@ -13,12 +24,13 @@ const renderArchive = (req, res) => {
             archiveActive: true,
         });
     })
-        /*
+
+    */
 
 
 }
 
 module.exports = {
-renderArchive
+    renderArchive
 }
 
