@@ -1,0 +1,40 @@
+{{>head}}
+
+<body>
+    <div class="control container loginForm">
+        <h3>{{ heading }}</h3>
+        {{#if loginFailed}}
+        <div class="tile is-primary notification is-danger">Ungültiger User oder Passwort</div>
+        {{/if}}
+        <div class="tile is-child notification is-primary">
+            <form method="POST" action="/login">
+
+                <fieldset class="field">
+                    <label class="label">Username</label>
+                    <div class="control has-icons-left">
+                        <input class="input" type="text" placeholder="Username" value="" name="username" required
+                            maxlength="20">
+                        <span class="icon is-small is-left">
+                            <i class="fa fa-user"></i>
+                        </span>
+                        <p class="help is-success"></p>
+                </fieldset>
+                <fieldset class="field">
+                    <label class="label">Password</label>
+                    <div class="control has-icons-left">
+                        <input class="input" type="password" placeholder="Password" value="" name="password" required
+                            maxlength="20">
+                        <span class="icon is-small is-left">
+                            <i class="fa fa-key"></i>
+                        </span>
+                        <p class="help is-success"></p>
+                </fieldset>
+                <fieldset class="field">
+                    <button class="button is-link is-pulled-right">Senden</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+</body>
+{{> footer}}

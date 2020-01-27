@@ -9,6 +9,7 @@ let expiresIn = 1;
 
 const getAccessToken = (username, password) => {
     console.log('Try to Create a new Token');
+    console.log(`${username} | ${password}`);
     //with user credentails, sollten über LoginController kommen
     let options = {
         uri: `${api}/login`,
@@ -29,9 +30,9 @@ const getAccessToken = (username, password) => {
             accessToken = tokenResponse.access_token;
             refreshToken = tokenResponse.refresh_token;
             expiresIn = (tokenResponse.expires_in * 1000) + Date.now();
-            console.log('Jetzt: ' + Date.now());
-            console.log('exp: ' + tokenResponse.expires_in);
-            console.log('expkomplett: ' + expiresIn);
+            //console.log('Jetzt: ' + Date.now());
+            //console.log('exp: ' + tokenResponse.expires_in);
+            //console.log('expkomplett: ' + expiresIn);
             return true;
         })
         .catch(err => {

@@ -17,12 +17,19 @@ const loggerMiddleware = (req, res, next) => {
     next();
 }
 //-->
+/*
+const sessionToLocalsCopy = (req, res, next) => {
+    res.locals.isLoggedIn = req.session && req.session.isLoggedIn;
+    next();
+}
+*/
 
 server.use(session({
     secret: process.env.SESSION_SECRET || 'sEt_seSSI0n_SecRET_NoW!',
     saveUninitialized: true,
     resave: false
 }));
+//server.use(sessionToLocalsCopy);
 server.use(express.static(path.join(__dirname, 'public'))); //für statische dateien die an die browser ausgeliefert werden sollen, css/js/img prefix public im Pfad weg lassen
 server.use(express.static(path.join(__dirname, 'node_modules'))); // für css in modules
 server.use(bodyParser.urlencoded({ extended: false }));

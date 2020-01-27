@@ -2,6 +2,11 @@ body, html{
     font-family: 'Roboto', sans-serif;
 }
 
+.loginForm{
+    max-width: 20rem;
+    margin-top: 5rem;
+}
+
 .footer{
-    
+    max-height: 2rem;
 }
