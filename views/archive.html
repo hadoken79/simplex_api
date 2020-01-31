@@ -4,10 +4,36 @@
     <main class="container">
         {{> nav }}
         <h3 class="title is-4">{{heading}}</h3>
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque,
-            omnis!!!!!
-        </p>
+
+
+        <div class="projectOptions">
+            <div class="dropdown is-hoverable">
+                <div class="dropdown-trigger">
+                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                        <span>Channels</span>
+                        <span class="icon is-small">
+                            <i class="fa fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                    <div class="dropdown-content">
+                        {{#each channels}}
+                        {{#if this.enabled}}
+                        <a href="#" class="dropdown-item">{{this.title}}</a>
+                        {{/if}}
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+
+            <input type="date" class="is-small" id="maxDatePicker">
+            <button class="button is-primary">Anzeigen</button>
+            <button class="button is-danger">Download</button>
+        </div>
+
+
     </main>
 </body>
 

@@ -3,29 +3,21 @@ const simplexService = require('../services/simplexService');
 
 const renderArchive = (req, res) => {
 
-
-    simplexService.testCall()
-        .then((message) => {
-            res.send(message);
-        })
-        .catch(err => {
-            //hier kann umgeleitet werden, falls Token tot.
-            res.send(err.response);
-        })
-
-
-
-    /*
-    simplexService.getProjects(/*daten wie Bereich, channel und co)
+    simplexService.getAllActiveChannels()
         .then(data => {
-        res.render('archive', {
-            title: 'Simplex-Api',
-            heading: 'Alle gewünschten Projekte',
-            archiveActive: true,
-        });
-    })
+            simplexService.getAllProjects(new Date())
+                .then(projects => {
 
-    */
+                    res.render('archive', {
+                        title: 'Simplex-Api',
+                        heading: 'Alle gewünschten Projekte',
+                        archiveActive: true,
+                        channels: data.content,
+                        projects: projects
+                    });
+
+                })
+        });
 
 
 }

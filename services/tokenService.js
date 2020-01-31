@@ -7,10 +7,13 @@ let accessToken = '';
 let refreshToken = '';
 let expiresIn = 1;
 
+//Initialcall oder wenn Refreshtoken nicht mehr gültig, an api um ein token zu erzeugen (30min gültig)
+
 const getAccessToken = (username, password) => {
     console.log('Try to Create a new Token');
-    console.log(`${username} | ${password}`);
-    //with user credentails, sollten über LoginController kommen
+    //console.log(`${username} | ${password}`);
+    username = process.env.USER;
+    password = process.env.PASSWORD;
     let options = {
         uri: `${api}/login`,
         form: {
@@ -30,9 +33,7 @@ const getAccessToken = (username, password) => {
             accessToken = tokenResponse.access_token;
             refreshToken = tokenResponse.refresh_token;
             expiresIn = (tokenResponse.expires_in * 1000) + Date.now();
-            //console.log('Jetzt: ' + Date.now());
-            //console.log('exp: ' + tokenResponse.expires_in);
-            //console.log('expkomplett: ' + expiresIn);
+            console.log(accessToken);
             return true;
         })
         .catch(err => {
@@ -42,6 +43,7 @@ const getAccessToken = (username, password) => {
         });
 };
 
+//Sobald die provideAccessToken Methode das Token als zu alt einstuft, oder eine 401 Antwort der Api kommt, wird ein Refresh versucht.
 const refreshAccessToken = () => {
 
     let options = {
@@ -68,7 +70,7 @@ const refreshAccessToken = () => {
 const provideAccessToken = () => {
 
     return new Promise((resolve, reject) => {
-
+        //um unnötigen Traffic zu vermeiden, kann erst intern geprüft werden, ob das Token abgelaufen ist.
         if (expiresIn <= Date.now()) {
             console.log('abgelaufen! exp: ' + expiresIn + ' now: ' + Date.now())
             return refreshAccessToken()

@@ -36,13 +36,13 @@ const getProjects = () => {
 
 };
 
-const testCall = () => {
+const getAllActiveChannels = () => {
 
     return tokenService.provideAccessToken()
         .then(accessToken => {
 
             let options = {
-                uri: `${api}/api/v1/channels?size=2`,
+                uri: `${api}/api/v1/channels?size=200`,
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     Accept: "application/json"
@@ -55,7 +55,7 @@ const testCall = () => {
                 .then(response => {
                     console.log(response);
                     console.log('================================================================================================>END OF CALL')
-                    return 'okily dokily';
+                    return response;
                 })
 
         });
@@ -63,7 +63,36 @@ const testCall = () => {
 
 }
 
+const getAllProjects = (maxDate) => {
+
+
+    //Beispieldatum
+    maxDateExample = '2018-12-31T12:00:00.000Z'
+
+    return tokenService.provideAccessToken()
+        .then(accessToken => {
+
+            let options = {
+                uri: `${api}/api/v1/projects?maxCreatedDate=${maxDateExample}&authorId=4063&customerId=4062&page=0&size=5&page=0`,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: "application/json"
+                },
+                json: true
+            };
+
+            return request
+                .get(options)
+                .then(response => {
+                    console.log(response);
+                    console.log('================================================================================================> END OF CALL');
+                    return response;
+                });
+        });
+}
+
 module.exports = {
     getProjects,
-    testCall
+    getAllActiveChannels,
+    getAllProjects
 };

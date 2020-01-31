@@ -10,3 +10,8 @@ body, html{
 .footer{
     max-height: 2rem;
 }
+
+.projectOptions{
+    display: flex;
+    justify-content: start;
+}

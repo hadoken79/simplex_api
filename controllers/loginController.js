@@ -15,6 +15,11 @@ const submitLogin = (req, res) => {
 
     tokenService.getAccessToken(req.body.username, req.body.password)
         .then(loginSucess => {
+
+            req.session.isLoggedIn = true;
+            res.redirect('/home');
+
+            /* für development deaktiviert, auch bei getToken
             if (loginSucess) {
                 req.session.isLoggedIn = true;
                 res.redirect('/home');
@@ -22,6 +27,7 @@ const submitLogin = (req, res) => {
                 req.body.loginFailed = true;
                 renderLogin(req, res);
             }
+            */
         })
 
 }
