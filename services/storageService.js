@@ -1,16 +1,12 @@
-const fs = require('fs');
+//const fs = require('fs');
+const { readdirSync, statSync } = require('fs');
+const { join } = require('path');
 
-const readTokens = () => {
+const getFolders = path => readdirSync(path).filter(elem => statSync(join(path, elem)).isDirectory());
 
-}
-
-const writeTokens = () => {
-
-}
 
 module.exports = {
-    readTokens,
-    writeTokens
+    getFolders
 }
 
 

@@ -9,7 +9,29 @@ const
 router.get('/home', homeController.renderHome);
 router.get('/', homeController.renderHome);
 
-router.get('/archive', authMiddleware, archiveController.renderArchive);
+router.get('/archive', authMiddleware, (req, res) => {
+
+    switch (req.query.do) {
+        case 'Show':
+            console.log('Case Anzeigen');
+            archiveController.renderArchiveSearch(req, res);
+            break;
+        case 'Download':
+            console.log('Case Herunterladen');
+            archiveController.prepareDownload(req, res);
+            break;
+            case 'Start':
+            console.log('Case beginn');
+            archiveController.startDownload(req, res);
+            break;
+        default:
+            console.log('Case Default');
+            archiveController.renderArchive(req, res);
+            break;
+    }
+
+});
+//router.post('/archive', authMiddleware, archiveController.renderArchiveSearch);
 
 router.get('/login', loginController.renderLogin);
 router.post('/login', loginController.submitLogin);

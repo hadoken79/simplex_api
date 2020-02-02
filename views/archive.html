@@ -5,33 +5,65 @@
         {{> nav }}
         <h3 class="title is-4">{{heading}}</h3>
 
+        <form method="get" action="/archive">
+            <div class="selectionWrapper">
 
-        <div class="projectOptions">
-            <div class="dropdown is-hoverable">
-                <div class="dropdown-trigger">
-                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                        <span>Channels</span>
-                        <span class="icon is-small">
-                            <i class="fa fa-angle-down" aria-hidden="true"></i>
-                        </span>
-                    </button>
+                <div class="pickerWrapper selectionItem">
+                    <input type="date" class="is-inline" name="maxDate" value={{pickerVal}}>
+                </div>
+                <div class="selectionItem">
+                    <input type="Submit" id='showProjects' class="button is-primary" name="do" value="Show"></button>
+                    <input type="Submit" class="button is-danger" name="do" value="Download"></button>
                 </div>
 
-                <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                    <div class="dropdown-content">
-                        {{#each channels}}
-                        {{#if this.enabled}}
-                        <a href="#" class="dropdown-item">{{this.title}}</a>
-                        {{/if}}
-                        {{/each}}
+                <!--DownloadModal-->
+                <div class="modal {{#if modal}}is-active{{/if}}">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">{{modalHeading}}</p>
+                            <button class="delete" aria-label="close"></button>
+                        </header>
+                        <section class="modal-card-body">
+                            {{#if dlEnable}}
+                            Möchtest Du alle Projekte mit Erstellungsdatum älter als <strong>{{pickerVal}}</strong> herunterladen?
+                            <br><strong>{{projects}}</strong> Elemente.<br>
+                            <b>Wähle einen Ordner und klicke Start..</b>
+                            <br>
+                            <div class="select">
+                                <select name="folder">
+                                    {{#each folders}}
+                                    <option>{{this}}</option>
+                                    {{/each}}
+                                    <option>neuer Ordner</option>
+                                </select>
+                            </div>
+                            {{else}}
+                            Kein Datum ausgewählt.
+                            {{/if}}
+                        </section>
+                        <footer class="modal-card-foot">
+                            <input type="Submit" class="button is-success" name="do" value="Start"
+                                {{#unless dlEnable}}disabled{{/unless}}></button>
+                            <button class="button">Abbruch</button>
+                        </footer>
                     </div>
                 </div>
-            </div>
+        </form>
 
-            <input type="date" class="is-small" id="maxDatePicker">
-            <button class="button is-primary">Anzeigen</button>
-            <button class="button is-danger">Download</button>
+
         </div>
+
+        <article>
+            {{#if projects}}
+            <p>Einträge: {{projects.totalElements}}</p>
+            {{/if}}
+            <p>
+                {{#each projects.content}}
+                {{this.projectId}} ||
+                {{/each}}
+            </p>
+        </article>
 
 
     </main>

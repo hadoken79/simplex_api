@@ -3,7 +3,7 @@ body, html{
 }
 
 .loginForm{
-    max-width: 20rem;
+    max-width: 25rem;
     margin-top: 5rem;
 }
 
@@ -11,7 +11,17 @@ body, html{
     max-height: 2rem;
 }
 
-.projectOptions{
+
+.selectionWrapper{
     display: flex;
-    justify-content: start;
+    align-items: flex-start;
+    
+}
+
+.pickerWrapper{
+    width: 20em;
+}
+
+.selectionItem{
+    padding: 0 0.15em;
 }
