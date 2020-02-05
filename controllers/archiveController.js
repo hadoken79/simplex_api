@@ -28,7 +28,7 @@ const renderArchiveSearch = (req, res) => {
 
     console.log(maxDate);
 
-    simplexService.getAllProjects(maxDate)
+    simplexService.getAllProjects(maxDate, 0)
         .then(projects => {
 
             res.render('archive', {
@@ -40,7 +40,6 @@ const renderArchiveSearch = (req, res) => {
             });
 
         })
-
 }
 
 const prepareDownload = (req, res) => {
@@ -57,7 +56,7 @@ const prepareDownload = (req, res) => {
         dlEnable = true;
     }
 
-    simplexService.getAllProjects(maxDate)
+    simplexService.getAllProjects(maxDate, 0)
         .then(projects => {
             //User muss über Modal erst noch einige Angaben machen.
             res.render('archive', {
@@ -81,7 +80,7 @@ const startDownload = (req, res) => {
 
     let workFolder = req.query.folder;
     let maxDate = req.query.maxDate + 'T12:00:00.000Z';
-   
+
 
     simplexService.downloadAllData(maxDate, workFolder)
         .then(response => {

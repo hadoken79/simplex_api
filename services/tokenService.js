@@ -72,14 +72,14 @@ const provideAccessToken = () => {
     return new Promise((resolve, reject) => {
         //um unnötigen Traffic zu vermeiden, kann erst intern geprüft werden, ob das Token abgelaufen ist.
         if (expiresIn <= Date.now()) {
-            console.log('abgelaufen! exp: ' + expiresIn + ' now: ' + Date.now())
+            console.log('provideToken | abgelaufen! exp: ' + expiresIn + ' now: ' + Date.now())
             return refreshAccessToken()
                 .then(() => {
                     resolve(accessToken);
                 })
                 .catch(err => {
                     if (err.statusCode === 401) {
-                        console.log('unable to refresh Token');
+                        console.log('provideToken | unable to refresh Token');
                         getAccessToken()
                             .then(() => {
                                 resolve(accessToken);
@@ -89,7 +89,7 @@ const provideAccessToken = () => {
                     }
                 });
         }
-        console.log('müsste noch gültig sein.')
+        console.log('provideToken | müsste noch gültig sein.')
         resolve(accessToken);
     });
 

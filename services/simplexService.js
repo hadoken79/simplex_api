@@ -1,5 +1,6 @@
-const storage = require("./storageService"),
-    request = require('request-promise'),
+const storageService = require("./storageService"),
+    request = require('request'),
+    pRequest = require('request-promise'),
     tokenService = require('./tokenService'),
     fs = require('fs');
 
@@ -23,7 +24,7 @@ const getProjects = () => {
         json: true
     };
 
-    request
+    pRequest
         .get(options)
         .then(response => {
             console.log(response);
@@ -52,7 +53,7 @@ const getAllActiveChannels = () => {
                 json: true
             };
 
-            return request
+            return pRequest
                 .get(options)
                 .then(response => {
                     console.log(response);
@@ -72,7 +73,7 @@ const getAllProjects = (maxDate, page) => {
         .then(accessToken => {
 
             let options = {
-                uri: `${api}/api/v1/projects?maxCreatedDate=${maxDate}&authorId=${authorId}&customerId=${customerId}&page=0&size=200&page=${page}`,
+                uri: `${api}/api/v1/projects?maxCreatedDate=${maxDate}&authorId=${authorId}&customerId=${customerId}&size=200&page=${page}`,
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     Accept: "application/json"
@@ -80,7 +81,7 @@ const getAllProjects = (maxDate, page) => {
                 json: true
             };
 
-            return request
+            return pRequest
                 .get(options)
                 .then(response => {
                     //console.log(response);
@@ -90,52 +91,54 @@ const getAllProjects = (maxDate, page) => {
         });
 }
 
-const downloadAllData = (maxDate, workFolder) => {
+const downloadAllData = async (maxDate, workFolder) => {
 
     //gehört eigentlich in storageService
     if (workFolder === 'neuer Ordner') {
-        workFolder = storageService.CreateNewFolder();
+        workFolder = await storageService.createNewFolder();
     }
+
     return getAllProjects(maxDate, 0)
         .then(projects => {
+
             pages = projects.totalPages;
             let counter = 0;
 
-            for (let i = 0; i <= pages; i++) {
+            const loop = async () => {
 
-                return getAllProjects(maxDate, i)
-                    .then(projects => {
-                        projects.content.forEach(project => {
-                            console.log('ForEach ' + project.projectId);
-                            console.log('Seite ' + i);
-                            counter ++;
-                            /* return downloadThumbnail(project.projectId)
-                                .then(file => {
-                                    //file.pipe(fs.createWriteStream(`storage/${workFolder}/simvid_1.jpg`));
-                                    return true;
-                                }) */
-                            //downloadVideo(project);
-                            //downloadJson(project);
+                for (let i = 0; i < pages; i++) {
+
+                    console.log('i = ' + i);
+                    await getAllProjects(maxDate, i)
+                        .then(projects => {
+                            projects.content.forEach(project => {
+                                //Für alle download-Methoden den Pfad ersetellen.
+                                fs.mkdirSync(`storage/${workFolder}/${project.projectId}`, { recursive: true });
+                                console.log('ForEach ' + project.projectId);
+                                counter++;
+
+                                return downloadThumbnail(project.projectId, workFolder);
+
+
+                                //downloadVideo(project);
+                                //downloadJson(project);
+
+                            });
+
                         });
-                        console.log(counter);
-                    });
-
-
+                    console.log('Artikel ' + projects.totalElements + ' gefunden ' + counter);
+                    console.log('Pages ' + pages + ' seitenzähler ' + i);
+                }
             }
-
-
-
+            loop();
         });
-
-
-
-
 }
 
-const downloadThumbnail = (projectId) => {
+const downloadThumbnail = (projectId, workFolder) => {
+    //first Guess
+    let file = 'simvid_1.jpg';
 
-    let file = 'simvid_1.jpg'
-
+    let fileStream = fs.createWriteStream(`storage/${workFolder}/${projectId}/${file}`);
     return tokenService.provideAccessToken()
         .then(accessToken => {
             let options = {
@@ -145,16 +148,20 @@ const downloadThumbnail = (projectId) => {
                 },
             };
 
-            return request
+            request
                 .get(options)
-                .then(response => {
-                    //console.log(response);
-                    if (response.statusCode == 404) {
-                        //hier falsche Filenamen Abfangen
+                .on('error', err => {
+                    console.log('FEHLER download Thumbnail ' + err.message);
+                    if (err.statusCode === 404) {
+                        switch (file) {
+                            case 'simvid_1.jpg':
+                                file = 'simvid_1_med.jpg';
+                                break;
+                        }
+                        downloadThumbnail(projectId, workFolder);
                     }
-                    return response;
                 })
-
+                .pipe(fileStream)
         });
 
 }
