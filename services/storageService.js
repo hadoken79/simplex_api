@@ -4,20 +4,45 @@ const { join } = require('path');
 
 const getFolders = path => readdirSync(path).filter(elem => statSync(join(path, elem)).isDirectory());
 
-const createNewFolder = () => {
-    //ToDo Rheienfolde und Foldernamen
-    let folders = getFolders('storage');
-    folders.sort((a, b) => a - b);
-    console.log('Folders ' + folders);
-    console.log('new ' + folders[folders.length - 1] + 1);
-    fs.mkdirSync(`storage/${(folders[folders.length - 1]) + 1}`, { recursive: true });
-}
+const createWorkFolder = folder => {
+    return new Promise((resolve, reject) => {
+        let folders = getFolders('storage');
+        folders.sort((a, b) => a - b);
+
+
+        if (folder === 'neuer Ordner') {
+            if (folders.length > 0) {
+                folder = parseInt(folders[folders.length - 1]) + 1;
+            } else {
+                folder = '1';
+            }
+
+        }
+        resolve(folder);
+    });
+};
+
+const createPath = (workFolder, channel, projectId) => {
+    return new Promise((resolve, reject) => {
+
+
+        let path = `storage/${workFolder}/${channel}/${projectId}`;
+        console.log('Pfad ' + path);
+
+        fs.mkdir(path, { recursive: true }, () => {
+            resolve(path);
+        });
+
+    });
+
+};
 
 
 
 module.exports = {
     getFolders,
-    createNewFolder
+    createPath,
+    createWorkFolder
 }
 
 

@@ -2,7 +2,8 @@ const storageService = require("./storageService"),
     request = require('request'),
     pRequest = require('request-promise'),
     tokenService = require('./tokenService'),
-    fs = require('fs');
+    fs = require('fs'),
+    { infoLog, warnLog } = require('./loggerService');
 
 require("dotenv").config();
 
@@ -66,6 +67,32 @@ const getAllActiveChannels = () => {
 
 }
 
+const getProjectChannel = projectId => {
+    return tokenService.provideAccessToken()
+        .then(accessToken => {
+            let options = {
+                uri: `${api}/api/v1/projects/${projectId}/channels?customerId=${customerId}`,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: "application/json"
+                },
+                json: true
+            };
+
+            return pRequest
+                .get(options)
+                .then(response => {
+                    console.log(response);
+
+                    if (response.length < 1) {
+                        return 0;
+                    }
+                    console.log('Get Project Channel ==============================================================================================> END OF CALL');
+                    return response[0].id;
+                });
+        });
+};
+
 const getAllProjects = (maxDate, page) => {
 
 
@@ -91,54 +118,54 @@ const getAllProjects = (maxDate, page) => {
         });
 }
 
-const downloadAllData = async (maxDate, workFolder) => {
+const downloadAllData = async (maxDate, folder) => {
 
-    //gehört eigentlich in storageService
-    if (workFolder === 'neuer Ordner') {
-        workFolder = await storageService.createNewFolder();
-    }
+    let totalProjects = await getAllProjects(maxDate, 0);
 
-    return getAllProjects(maxDate, 0)
-        .then(projects => {
+    let workFolder = await storageService.createWorkFolder(folder);
 
-            pages = projects.totalPages;
-            let counter = 0;
+    let pages = totalProjects.totalPages;
+    let counter = 0;
 
-            const loop = async () => {
+    const loop = async () => {
 
-                for (let i = 0; i < pages; i++) {
+        for (let i = 0; i < pages; i++) {
 
-                    console.log('i = ' + i);
-                    await getAllProjects(maxDate, i)
-                        .then(projects => {
-                            projects.content.forEach(project => {
-                                //Für alle download-Methoden den Pfad ersetellen.
-                                fs.mkdirSync(`storage/${workFolder}/${project.projectId}`, { recursive: true });
-                                console.log('ForEach ' + project.projectId);
-                                counter++;
+            console.log('i = ' + i);
+            let projects = await getAllProjects(maxDate, i);
 
-                                return downloadThumbnail(project.projectId, workFolder);
+            for (let project of projects.content) {
+
+                //ChannelCheck muss noch hier rein und die CreatePath Methode muss um den Channel erweitert werden
+                let channel = await getProjectChannel(project.projectId);
+                console.log('ForEach ' + project.projectId);
+                let path = await storageService.createPath(workFolder, channel, project.projectId);
 
 
-                                //downloadVideo(project);
-                                //downloadJson(project);
+                counter++;
 
-                            });
+                await downloadThumbnail(project.projectId, path);
+                console.log('Thumb-downloaded');
 
-                        });
-                    console.log('Artikel ' + projects.totalElements + ' gefunden ' + counter);
-                    console.log('Pages ' + pages + ' seitenzähler ' + i);
-                }
+                //await downloadVideo(project.projectId, path);
+                //console.log('Video-downloaded');
+
+                //await downloadJson(project.projectId, path);
+                //console.log('Json-downloaded');
+
             }
-            loop();
-        });
+            console.log('Artikel ' + projects.totalElements + ' gefunden ' + counter);
+            console.log('Pages ' + pages + ' seitenzähler ' + i);
+        }
+    }
+    loop();
 }
 
-const downloadThumbnail = (projectId, workFolder) => {
+const downloadThumbnail = (projectId, path) => {
     //first Guess
     let file = 'simvid_1.jpg';
 
-    let fileStream = fs.createWriteStream(`storage/${workFolder}/${projectId}/${file}`);
+    let fileStream = fs.createWriteStream(`${path}/${file}`);
     return tokenService.provideAccessToken()
         .then(accessToken => {
             let options = {
@@ -147,21 +174,27 @@ const downloadThumbnail = (projectId, workFolder) => {
                     Authorization: `Bearer ${accessToken}`,
                 },
             };
-
-            request
-                .get(options)
-                .on('error', err => {
-                    console.log('FEHLER download Thumbnail ' + err.message);
-                    if (err.statusCode === 404) {
-                        switch (file) {
-                            case 'simvid_1.jpg':
-                                file = 'simvid_1_med.jpg';
-                                break;
+            try {
+                request
+                    .get(options)
+                    .on('error', err => {
+                        console.log('FEHLER download Thumbnail ' + err.message);
+                        if (err.statusCode === 404) {
+                            switch (file) {
+                                case 'simvid_1.jpg':
+                                    file = 'simvid_1_med.jpg';
+                                    break;
+                            }
+                            downloadThumbnail(projectId, workFolder);
                         }
-                        downloadThumbnail(projectId, workFolder);
-                    }
-                })
-                .pipe(fileStream)
+                    })
+                    .pipe(fileStream)
+            } catch (error) {
+                console.log('PIPE error ' + error);
+                warnLog(`Fehler bei Versuch Thumbnail für ${path} herunter zu laden`);
+            }
+
+
         });
 
 }

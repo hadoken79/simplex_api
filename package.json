@@ -25,6 +25,7 @@
     "nodemon": "^2.0.2",
     "path": "^0.12.7",
     "request": "^2.88.0",
-    "request-promise": "^4.2.5"
+    "request-promise": "^4.2.5",
+    "simple-node-logger": "^18.12.24"
   }
 }

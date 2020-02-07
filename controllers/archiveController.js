@@ -78,11 +78,11 @@ const startDownload = (req, res) => {
 
     //console.log('Selected Folder = ' + req.query.folder);
 
-    let workFolder = req.query.folder;
+    let folder = req.query.folder;
     let maxDate = req.query.maxDate + 'T12:00:00.000Z';
 
 
-    simplexService.downloadAllData(maxDate, workFolder)
+    simplexService.downloadAllData(maxDate, folder)
         .then(response => {
 
             //platzhalter
