@@ -57,7 +57,7 @@ const getAllActiveChannels = () => {
             return pRequest
                 .get(options)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     console.log('================================================================================================>END OF CALL')
                     return response;
                 })
@@ -121,7 +121,7 @@ const getAllProjects = (maxDate, page) => {
 const downloadAllData = async (maxDate, folder) => {
 
     let totalProjects = await getAllProjects(maxDate, 0);
-
+    let workFolderInventory = [];
     let workFolder = await storageService.createWorkFolder(folder);
 
     let pages = totalProjects.totalPages;
@@ -144,32 +144,37 @@ const downloadAllData = async (maxDate, folder) => {
 
                 counter++;
 
-                await downloadThumbnail(project.projectId, path);
+                await downloadThumbnail(project.projectId, path, 'simvid_1.jpg'); //(simvid_1.jpg) => first bet
                 console.log('Thumb-downloaded');
 
-                //await downloadVideo(project.projectId, path);
-                //console.log('Video-downloaded');
+                await downloadVideo(project.projectId, path, 'simvid_1.mp4'); //(simvid_1.mp4) => first bet
+                console.log('Video-downloaded');
 
-                //await downloadJson(project.projectId, path);
-                //console.log('Json-downloaded');
+                await downloadJson(project.projectId, path);
+                console.log('Json-downloaded');
+                workFolderInventory.push(project.projectId);
 
             }
             console.log('Artikel ' + projects.totalElements + ' gefunden ' + counter);
             console.log('Pages ' + pages + ' seitenzähler ' + i);
+            fs.appendFile(`storage/${workFolder}/Projects.del`, JSON.stringify(workFolderInventory), (err) => {
+                if (err) warnLog('Fehler beim schreiben des Projektinventars im Workfolder ' + err);
+                console.log('Projektinventar erstellt');
+              });
         }
     }
     loop();
+    
+    return Promise.resolve('download begonnen....');
 }
 
-const downloadThumbnail = (projectId, path) => {
-    //first Guess
-    let file = 'simvid_1.jpg';
+const downloadThumbnail = (projectId, path, fileName) => {
 
-    let fileStream = fs.createWriteStream(`${path}/${file}`);
+    let fileStream = fs.createWriteStream(`${path}/${fileName}`);
     return tokenService.provideAccessToken()
         .then(accessToken => {
             let options = {
-                uri: `${api}/content/${customerId}/${authorId}/${projectId}/${file}`,
+                uri: `${api}/content/${customerId}/${authorId}/${projectId}/${fileName}`,
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -178,26 +183,100 @@ const downloadThumbnail = (projectId, path) => {
                 request
                     .get(options)
                     .on('error', err => {
+                        //Simplex hält sich nicht an ein stringentes Namenskonzept, über die Jahre änderten die immer mal wieder.
                         console.log('FEHLER download Thumbnail ' + err.message);
                         if (err.statusCode === 404) {
-                            switch (file) {
+                            let altFileName = '';
+                            
+                            switch (fileName) {
                                 case 'simvid_1.jpg':
-                                    file = 'simvid_1_med.jpg';
+                                    altFileName = 'simvid_1_med.jpg'
                                     break;
                             }
-                            downloadThumbnail(projectId, workFolder);
+                            infoLog(`Thumbnail ${fileName} nicht gefunden. Versuche ${altFileName}`);
+                            downloadThumbnail(projectId, workFolder, altFileName);
+                            
                         }
                     })
                     .pipe(fileStream)
             } catch (error) {
                 console.log('PIPE error ' + error);
-                warnLog(`Fehler bei Versuch Thumbnail für ${path} herunter zu laden`);
+                warnLog(`Fehler bei Versuch Thumbnail für ${path} herunterzuladen`);
+                Promise.reject(`Fehler bei Versuch Thumbnail für ${path} herunterzuladen`);
             }
-
-
         });
-
 }
+
+const downloadVideo = (projectId, path, fileName) => {
+
+
+    let fileStream = fs.createWriteStream(`${path}/${fileName}`);
+    return tokenService.provideAccessToken()
+        .then(accessToken => {
+            let options = {
+                uri: `${api}/content/${customerId}/${authorId}/${projectId}/${fileName}`,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            };
+            try {
+                request
+                    .get(options)
+                    .on('error', err => {
+                        //Simplex hält sich nicht an ein stringentes Namenskonzept, über die Jahre änderten die immer mal wieder.
+                        console.log('FEHLER download Thumbnail ' + err.message);
+                        if (err.statusCode === 404) {
+                            let altFileName = '';
+                            
+                            switch (fileName) {
+                                case 'simvid_1.mp4':
+                                    altFileName = 'simvid_1_1080.mp4'
+                                    break;
+                                    case 'simvid_1080.mp4':
+                                    altFileName = 'simvid_720.mp4'
+                                    break;
+                            }
+                            infoLog(`Thumbnail ${fileName} nicht gefunden. Versuche ${altFileName}`);
+                            downloadThumbnail(projectId, workFolder, altFileName);
+                            
+                        }
+                    })
+                    .pipe(fileStream)
+            } catch (error) {
+                console.log('PIPE error ' + error);
+                warnLog(`Fehler bei Versuch Video für ${path} herunterzuladen`);
+                Promise.reject(`Fehler bei Versuch Video für ${path} herunterzuladen`);
+            }
+        });
+}
+
+const downloadJson = (projectId, path) => {
+
+    let fileStream = fs.createWriteStream(`${path}/${projectId}.json`);
+    return tokenService.provideAccessToken()
+        .then(accessToken => {
+            let options = {
+                uri: `${api}/api/v1/projects/${projectId}`,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: "application/json"
+                }
+            };
+            request
+                .get(options)
+                .on('error', err => {
+                    
+                        console.log('FEHLER download Json ' + err.message);
+                        warnLog(`Json download für ${projectId} gescheitert ${path}`);
+                })
+                .on('response', response => {
+                    console.log(response.statusCode);
+                    console.log(response.headers['content-type']);
+                  })
+                .pipe(fileStream)
+        });
+}
+
 
 module.exports = {
     getProjects,

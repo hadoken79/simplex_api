@@ -9,8 +9,9 @@ const renderArchive = (req, res) => {
 
     res.render('archive', {
         title: 'Simplex-Api',
-        heading: 'Hier kannst Du die auf Simplex liegenden Projekte anzeigen lassen',
+        heading: 'Hier kannst Projekte auf Simplex anzeigen oder herunterladen.',
         archiveActive: true,
+        info: 'Status'
     });
 
 }
@@ -36,6 +37,7 @@ const renderArchiveSearch = (req, res) => {
                 heading: 'Alle gewünschten Projekte',
                 archiveActive: true,
                 projects: projects,
+                info: 'Auszug der Projekte (Seite 1)',
                 pickerVal
             });
 
@@ -68,6 +70,7 @@ const prepareDownload = (req, res) => {
                 pickerVal,
                 folders,
                 dlEnable,
+                info: 'Auszug der Projekte (Seite 1)',
                 projects: projects.totalElements
             });
         });
@@ -88,7 +91,8 @@ const startDownload = (req, res) => {
             //platzhalter
             res.render('archive', {
                 title: 'Simplex-Api',
-                heading: 'Alle gewünschten Projekte',
+                heading: response,
+                info: 'Download Status',
                 archiveActive: true
             });
         });

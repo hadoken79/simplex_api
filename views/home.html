@@ -8,6 +8,7 @@
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque,
       omnis!!!!!
     </p>
+    <!--
     <div class="dropdown is-hoverable selectionItem">
       <div class="dropdown-trigger">
           <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
@@ -27,6 +28,21 @@
               {{/each}}
           </div>
       </div>
+  </div>
+-->
+  <div class="field">
+    <div class="control">
+      <div class="select is-primary">
+        <select>
+          <option>Channels</option>
+          {{#each channels}}
+          {{#if this.enabled}}
+          <option>{{this.title}}</option>
+          {{/if}}
+          {{/each}}
+        </select>
+      </div>
+    </div>
   </div>
   </main>
 </body>

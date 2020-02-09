@@ -25,3 +25,9 @@ body, html{
 .selectionItem{
     padding: 0 0.15em;
 }
+
+#downloadStatus{
+
+    margin: 3em 0 3em 0;
+    min-height: 50vh;
+}

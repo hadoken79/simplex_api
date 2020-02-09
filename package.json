@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.17.0",
+    "express-ws": "^4.0.0",
     "font-awesome": "^4.7.0",
     "fs": "0.0.1-security",
     "handlebars": "^4.5.3",
@@ -26,6 +27,7 @@
     "path": "^0.12.7",
     "request": "^2.88.0",
     "request-promise": "^4.2.5",
-    "simple-node-logger": "^18.12.24"
+    "simple-node-logger": "^18.12.24",
+    "ws": "^7.2.1"
   }
 }

@@ -1,5 +1,5 @@
 {{> head}}
-
+<!--<script src="ws/lib/websocket.js"></script>-->
 <body>
     <main class="container">
         {{> nav }}
@@ -35,7 +35,7 @@
                                     {{#each folders}}
                                     <option>{{this}}</option>
                                     {{/each}}
-                                    <option>neuer Ordner</option>
+                                    <option selected>neuer Ordner</option>
                                 </select>
                             </div>
                             {{else}}
@@ -54,7 +54,10 @@
 
         </div>
 
-        <article>
+        <article id="downloadStatus" class="panel is-info">
+            <p class="panel-heading">
+            {{info}}
+              </p>
             {{#if projects}}
             <p>Einträge: {{projects.totalElements}}</p>
             {{/if}}
@@ -63,6 +66,7 @@
                 {{this.projectId}} ||
                 {{/each}}
             </p>
+            
         </article>
 
 
