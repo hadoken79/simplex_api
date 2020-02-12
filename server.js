@@ -5,7 +5,8 @@ const
     routing = require('./routes'),
     session = require('express-session'),
     path = require('path'),
-    webSocketServer = require('ws').Server;;
+    webSocketServer = require('ws').Server;
+
 
 
 require('dotenv').config();
@@ -64,21 +65,33 @@ server.listen(port, () => {
 
 
 
-
-
-
-
 let wss = new webSocketServer({ port: 8080 })
+//wss.setMaxListeners(1000);
 
 
-wss.on('connection', function (ws) {
-    ws.on('message', function (message) {
+wss.on('connection', ws => {
+
+    ws.on('message', message => {
         console.log('received: %s', message)
     })
-    ws.send('Hello there');
 
-//Wie von ausserhalb auf ws zugreifen?????
-})
+    module.exports.sendMsg = msg => {
+
+        ws.send(msg);
+    };
+
+});
+
+
+
+
+
+
+
+
+
+
+
 
 
 

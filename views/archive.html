@@ -1,9 +1,10 @@
 {{> head}}
 <!--<script src="ws/lib/websocket.js"></script>-->
+
 <body>
     <main class="container">
         {{> nav }}
-        <h3 class="title is-4">{{heading}}</h3>
+        <h3 id='dlTitle' class="title is-4">{{heading}}</h3>
 
         <form method="get" action="/archive">
             <div class="selectionWrapper">
@@ -26,7 +27,8 @@
                         </header>
                         <section class="modal-card-body">
                             {{#if dlEnable}}
-                            Möchtest Du alle Projekte mit Erstellungsdatum älter als <strong>{{pickerVal}}</strong> herunterladen?
+                            Möchtest Du alle Projekte mit Erstellungsdatum älter als <strong>{{pickerVal}}</strong>
+                            herunterladen?
                             <br><strong>{{projects}}</strong> Elemente.<br>
                             <b>Wähle einen Ordner und klicke Start..</b>
                             <br>
@@ -56,8 +58,9 @@
 
         <article id="downloadStatus" class="panel is-info">
             <p class="panel-heading">
-            {{info}}
-              </p>
+                {{info}}
+            </p>
+
             {{#if projects}}
             <p>Einträge: {{projects.totalElements}}</p>
             {{/if}}
@@ -66,7 +69,7 @@
                 {{this.projectId}} ||
                 {{/each}}
             </p>
-            
+
         </article>
 
 

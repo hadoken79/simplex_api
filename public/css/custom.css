@@ -27,7 +27,26 @@ body, html{
 }
 
 #downloadStatus{
-
+    justify-content: space-between;
     margin: 3em 0 3em 0;
     min-height: 50vh;
 }
+
+.progress{
+    margin-left: auto;
+    max-width: 80%;
+}
+/*
+.pgWrapper{
+    width: 100%;
+    justify-content: flex-end;
+}
+*/
+.downloadTitle{
+    margin: 0 0.25em 0 0.25em;
+}
+/*
+.panel-block{
+    justify-content: space-between;
+}
+*/
