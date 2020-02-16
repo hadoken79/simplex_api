@@ -5,8 +5,7 @@ const
     routing = require('./routes'),
     session = require('express-session'),
     path = require('path'),
-    webSocketServer = require('ws').Server;
-
+    webSocketServer = require('ws').Server;;
 
 
 require('dotenv').config();
@@ -52,7 +51,8 @@ server.set('view engine', 'html');
 server.engine('html', expressHandlebars({
     defaultLayout: false,
     extname: 'html',
-    partialsDir: 'views/partials'
+    partialsDir: 'views/partials',
+    helpers: require('./handlebars-helpers') //damit Helpers auch mit express-handlebars funktionieren
 }));
 
 
@@ -81,17 +81,6 @@ wss.on('connection', ws => {
     };
 
 });
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -15,33 +15,34 @@ const customerId = process.env.COSTOMERID;
 let countAllVideoDownloads = 0;
 
 
-//eventuell für Home
-const getProjects = () => {
-    //if token is expired try refresh
 
-    let options = {
-        uri: `${api}/api/v1/channels/1023/projects?page=0&size=200`,
-        headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json"
-        },
-        json: true
-    };
+const getChannelProjects = (channel, size, page, sort = 'createdDate:asc') => {
 
-    pRequest
-        .get(options)
-        .then(response => {
-            console.log(response);
-        })
-        .catch(err => {
-            console.log(err.statusMessage);
-            console.log(err.statusCode);
-            if (err.statusCode === 401) {
-                refreshAccessToken();
-            }
+    return tokenService.provideAccessToken()
+        .then(accessToken => {
+
+            let options = {
+                uri: `${api}/api/v1/channels/${channel}/projects?page=${page}&size=${size}&sort=${sort}`,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: "application/json"
+                },
+                json: true
+            };
+
+            return pRequest
+                .get(options)
+                .then(response => {
+                    console.log(response.statusCode);
+                    console.log(`Get All Projects From Channel ${channel}===========================================================> END OF CALL`);
+                    return response;
+                })
+                .catch(err => {
+                    warnLog('Fehler bei getChannelProjects ' + err);
+                    return err;
+                })
         });
-
-};
+}
 
 const getAllActiveChannels = () => {
 
@@ -61,7 +62,7 @@ const getAllActiveChannels = () => {
                 .get(options)
                 .then(response => {
                     //console.log(response);
-                    console.log('================================================================================================>END OF CALL')
+                    console.log('Got all Channels=============================================================================>END OF CALL')
                     return response;
                 })
 
@@ -96,13 +97,13 @@ const getProjectChannel = projectId => {
         });
 };
 
-const getAllProjects = (maxDate, page) => {
+const getAllProjects = (maxDate, size, page, sort = 'createdDate:asc') => {
 
     return tokenService.provideAccessToken()
         .then(accessToken => {
 
             let options = {
-                uri: `${api}/api/v1/projects?maxCreatedDate=${maxDate}&authorId=${authorId}&customerId=${customerId}&size=200&page=${page}`,
+                uri: `${api}/api/v1/projects?maxCreatedDate=${maxDate}&authorId=${authorId}&customerId=${customerId}&size=${size}&page=${page}&sort=${sort}`,
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     Accept: "application/json"
@@ -116,13 +117,17 @@ const getAllProjects = (maxDate, page) => {
                     //console.log(response);
                     console.log('Get All Projects ==============================================================================================> END OF CALL');
                     return response;
-                });
+                })
+                .catch(err => {
+                    warnLog('Fehler bei getAllProjects ' + err);
+                    return err;
+                })
         });
 }
 
 const downloadAllData = async (maxDate, folder) => {
     countAllVideoDownloads = 0;
-    let totalProjects = await getAllProjects(maxDate, 0);
+    let totalProjects = await getAllProjects(maxDate, 200, 0);
     let workFolderInventory = [];
     let workFolder = await storageService.createWorkFolder(folder);
 
@@ -134,7 +139,7 @@ const downloadAllData = async (maxDate, folder) => {
         for (let i = 0; i < pages; i++) {
 
             console.log('i = ' + i);
-            let projects = await getAllProjects(maxDate, i);
+            let projects = await getAllProjects(maxDate, 200, i);
 
             for (let project of projects.content) {
 
@@ -317,7 +322,7 @@ const downloadJson = (projectId, path) => {
 
 
 module.exports = {
-    getProjects,
+    getChannelProjects,
     getAllActiveChannels,
     getAllProjects,
     downloadAllData

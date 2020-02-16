@@ -29,7 +29,7 @@ const renderArchiveSearch = (req, res) => {
 
     console.log(maxDate);
 
-    simplexService.getAllProjects(maxDate, 0)
+    simplexService.getAllProjects(maxDate, 200, 0)
         .then(projects => {
 
             res.render('archive', {
@@ -58,7 +58,7 @@ const prepareDownload = (req, res) => {
         dlEnable = true;
     }
 
-    simplexService.getAllProjects(maxDate, 0)
+    simplexService.getAllProjects(maxDate, 200, 0)
         .then(projects => {
             //User muss über Modal erst noch einige Angaben machen.
             res.render('archive', {
@@ -91,8 +91,8 @@ const startDownload = (req, res) => {
             //platzhalter
             res.render('archive', {
                 title: 'Simplex-Api',
-                heading: response,
-                info: 'Download Status',
+                heading: 'Projekte runterladen',
+                info: 'Download begonnen',
                 archiveActive: true
             });
         });

@@ -1,1 +1,22 @@
 
+2020-02-14 16:16:03.136 WARN  Fehler bei getAllProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-14 16:16:06.121 WARN  Fehler bei getAllProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-14 16:32:27.433 WARN  Fehler bei getAllProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-14 16:32:37.499 WARN  Fehler bei getAllProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-14 16:32:46.474 WARN  Fehler bei getAllProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-14 16:33:11.249 WARN  Fehler bei getAllProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-14 16:33:21.239 WARN  Fehler bei getAllProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-16 14:49:57.560 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 
+2020-02-16 15:13:00.432 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 
+2020-02-16 15:13:17.069 WARN  Fehler bei getChannelProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-16 15:14:38.628 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 
+2020-02-16 15:14:40.304 WARN  Fehler bei getChannelProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-16 15:16:06.163 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 
+2020-02-16 15:16:09.571 WARN  Fehler bei getChannelProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-16 15:16:42.764 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 
+2020-02-16 15:16:45.447 WARN  Fehler bei getChannelProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-16 15:17:09.899 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 
+2020-02-16 15:21:18.897 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 
+2020-02-16 15:22:35.598 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 
+2020-02-16 15:23:00.089 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 
+2020-02-16 15:24:22.165 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 

@@ -2,6 +2,10 @@ body, html{
     font-family: 'Roboto', sans-serif;
 }
 
+main{
+    min-height: 100vh;
+}
+
 .loginForm{
     max-width: 25rem;
     margin-top: 5rem;
@@ -9,6 +13,7 @@ body, html{
 
 .footer{
     max-height: 2rem;
+    margin-top: auto;
 }
 
 
@@ -36,17 +41,49 @@ body, html{
     margin-left: auto;
     max-width: 80%;
 }
-/*
-.pgWrapper{
-    width: 100%;
-    justify-content: flex-end;
-}
-*/
+
 .downloadTitle{
     margin: 0 0.25em 0 0.25em;
 }
-/*
-.panel-block{
-    justify-content: space-between;
+
+/* um card in text auf Höhe zu fixieren muss ein workaround gemacht werden, da bulma bis jetzt kein truncate multiline kennt*/
+.card-description {
+
+    display: block;
+    /* Fallback for non-webkit */
+    display: -webkit-box;
+    /*   max-width: 400px; */
+    height: 50px;
+    /* Fallback for non-webkit */
+    margin: 0 auto;
+    /*   font-size: 26px; */
+    /*line-height: 1.4;*/
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
 }
-*/
+
+.card-title{
+    display: block;
+    /* Fallback for non-webkit */
+    display: -webkit-box;
+    /*   max-width: 400px; */
+    height: 25px;
+    /* Fallback for non-webkit */
+    margin: 0 auto;
+    /*   font-size: 26px; */
+    /*line-height: 1.4;*/
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.is-ellipsis-1 {
+    -webkit-line-clamp: 1;
+  }
+
+.is-ellipsis-2 {
+  -webkit-line-clamp: 2;
+}
+/*-----------------------------------------------------------------------------------------------------------------------------*/

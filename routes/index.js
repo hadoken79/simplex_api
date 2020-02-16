@@ -3,11 +3,14 @@ const
     homeController = require('../controllers/homeController'),
     archiveController = require('../controllers/archiveController'),
     loginController = require('../controllers/loginController'),
-    authMiddleware = require('../middleware/authMiddleware');
-
+    authMiddleware = require('../middleware/authMiddleware'),
+    clientController = require('../controllers/clientController');
 
 router.get('/home', homeController.renderHome);
 router.get('/', homeController.renderHome);
+
+router.get('/api/allProjects', authMiddleware, clientController.getProjectsFromAllChannels);
+router.get('/api/channelProjects', authMiddleware, clientController.getProjectsFromDistinctChannel);
 
 router.get('/archive', authMiddleware, (req, res) => {
 
