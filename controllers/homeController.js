@@ -18,10 +18,8 @@ const renderHome = (req, res) => {
                         channels: channeldata.content,
                         projects: projects
                     });
-
-                })
+                });
         });
-
 }
 
 

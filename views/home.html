@@ -8,49 +8,40 @@
       Hier können die Projekte eingesehen werden.
     </p>
     <div class="selectionWrapper">
-    <div class="field">
-      <div class="control">
-        <div class="select is-primary">
-          <select id="channelSelector">
-            <option value=''>alle Channels</option>
-            {{#each channels}}
-            {{#if this.enabled}}
-            <option value={{this.id}}>{{this.title}}</option>
-            {{/if}}
-            {{/each}}
-          </select>
+      <div class="field">
+        <div class="control">
+          <div class="select is-primary">
+            <select id="channelSelector">
+              <option value=''>alle Channels</option>
+              {{#each channels}}
+              {{#if this.enabled}}
+              <option value={{this.id}}>{{this.title}}</option>
+              {{/if}}
+              {{/each}}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <div class="select is-primary">
+            <select id="sortingSelector">
+              <option value="desc">Datum absteigend</option>
+              <option value="asc">Datum aufsteigend</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
-    <div class="field">
-      <div class="control">
-        <div class="select is-primary">
-          <select id="sortingSelector">
-            <option value="desc">Datum absteigend</option>
-            <option value="asc">Datum aufsteigend</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  </div>
 
     <div class="columns is-multiline">
-     
+
     </div>
 
-    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-      <a  id="pre-pag" class="pagination-previous">Previous</a>
-      <a  id="next-pag" class="pagination-next">Next page</a>
-      <ul class="pagination-list">
-        <li><a  id="first-pag" class="pagination-link">1</a></li>
-        <li><span class="pagination-ellipsis">&hellip;</span></li>
-        <li><a href="/home?page={{add projects.number -1}}" id="left-pag" class="pagination-link"></a></li>
-        <li><a href="/home?page={{add projects.number 1}}" id="middle-pag" class="pagination-link"></a></li>
-        <li><a href="/home?page={{add projects.number 2}}" id="right-pag" class="pagination-link" ></a></li>
-        <li><span class="pagination-ellipsis">&hellip;</span></li>
-        <li><a href="/home?page={{add projects.totalPages -1}}" id="last-pag" class="pagination-link"></a></li>
-      </ul>
-    </nav>
+    <div id="pag-wrapper">
+
+    </div>
+
 
 
 

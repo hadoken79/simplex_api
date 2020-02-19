@@ -5,9 +5,9 @@ const simplexService = require('../services/simplexService');
 const getProjectsFromAllChannels = (req, res) => {
 
     let maxCreateDate = req.query.maxCreateDate || new Date().toISOString();
-    let size = req.query.size || 30;
-    let pageNum = req.query.page || 0;
-    let sort = req.query.sort || 'desc';
+    let size = req.query.size;
+    let pageNum = req.query.page;
+    let sort = req.query.sort;
 
 
     simplexService.getAllProjects(maxCreateDate, size, pageNum, `createdDate:${sort}`)
@@ -24,10 +24,10 @@ const getProjectsFromAllChannels = (req, res) => {
 
 const getProjectsFromDistinctChannel = (req, res) => {
 
-    let channel = req.query.channel || 989;
-    let size = req.query.size || 30;
-    let pageNum = req.query.page || 0;
-    let sort = req.query.sort || 'desc';
+    let channel = req.query.channel;
+    let size = req.query.size;
+    let pageNum = req.query.page;
+    let sort = req.query.sort;
 
 
     simplexService.getChannelProjects(channel, size, pageNum, `createdDate:${sort}`)

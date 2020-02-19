@@ -20,3 +20,47 @@
 2020-02-16 15:22:35.598 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 
 2020-02-16 15:23:00.089 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 
 2020-02-16 15:24:22.165 WARN  Fehler bei getChannelProjects TypeError: Cannot read property 'statusCode' of undefined 
+2020-02-18 14:33:26.573 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:26.929 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:27.483 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:27.634 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:28.443 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:28.881 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:29.045 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:29.481 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:29.575 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:30.830 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:31.701 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:31.818 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:32.192 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:32.311 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:32.534 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:32.600 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:32.839 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:33.072 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:33.217 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:33.278 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:33.352 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:34.082 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:35.492 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:36.476 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:37.078 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:38.728 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:38.832 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:39.301 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:39.377 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:39.742 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:41.179 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 14:33:41.342 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 15:06:11.875 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 15:08:03.814 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 15:08:03.829 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 15:08:03.846 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 15:08:03.897 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 15:08:03.945 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 15:08:03.953 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 15:08:03.970 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 15:08:03.998 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 15:08:04.005 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 15:08:04.017 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-18 15:08:04.023 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 

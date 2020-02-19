@@ -24,10 +24,10 @@ document.addEventListener("DOMContentLoaded", event => {
 
 
     //Home 
-    if (document.getElementById('pre-pag')) {
-
+    if (document.getElementById('pag-wrapper')) {
 
         //initial call
+        console.log('INIT CALL')
         getProjectsFromAllChannels(null, new Date().toISOString(), 30, 0, 'desc');
 
         //Form
@@ -36,6 +36,8 @@ document.addEventListener("DOMContentLoaded", event => {
 
         let channel = channelOption.value;
         let sort = sortOption.value;
+
+
 
         //Event Listeners
         channelOption.onchange = () => {
@@ -47,9 +49,6 @@ document.addEventListener("DOMContentLoaded", event => {
             console.log('sorting ' + sortOption.value);
             getProjectsFromAllChannels(channel, new Date().toISOString(), 30, 0, sortOption.value);
         }
-
-        //paginationButtonEvents
-
     }
 
     //Archive
@@ -87,17 +86,18 @@ document.addEventListener("DOMContentLoaded", event => {
 
 //Methods
 const getProjectsFromAllChannels = (channel, maxCreationDate, size, page, sort) => {
+
     let url;
     if (channel) {
         url = `/api/channelProjects?channel=${channel}&size=${size}&page=${page}&sort=${sort}`;
     } else {
         url = `/api/allProjects?maxCreateDate=${maxCreationDate}&size=${size}&page=${page}&sort=${sort}`;
     }
+
     fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-            // 'Content-Type': 'application/x-www-form-urlencoded',
         },
     })
         .then(response => {
@@ -108,7 +108,7 @@ const getProjectsFromAllChannels = (channel, maxCreationDate, size, page, sort) 
             }
         })
         .then(projects => {
-            console.log(projects);
+            console.log('ANSWER FROM FETCH');
             updateHomeGui(projects);
         })
         .catch(err => {
@@ -123,22 +123,30 @@ const updateHomeGui = projects => {
     let head = document.querySelector('#homeheading');
     let channelOption = document.querySelector('#channelSelector');
     let channelSelection = channelOption.options[channelOption.selectedIndex].text;
-    head.textContent = `Im Channel <${channelSelection}> sind im Moment ${projects.totalElements} Projekte auf Simplex online.`
+    head.textContent = `Im Channel <${channelSelection}> sind im Moment ${projects.totalElements} Projekte auf Simplex online.`;
+    let sortOption = document.querySelector('#sortingSelector');
+
 
     let wrapper = document.querySelector('.columns');
+    let pagWrapper = document.querySelector('#pag-wrapper');
 
-    //Alte ELemente entfernen
+    //alle ELemente entfernen
     while (wrapper.firstChild) {
         wrapper.removeChild(wrapper.firstChild);
     }
+    while (pagWrapper.firstChild) {
+        pagWrapper.removeChild(pagWrapper.firstChild);
+    }
+
     //falls api nichts liefert
-    if (!projects.content) {
+    if (projects.length < 1) {
         let error = document.createElement('div');
         error.classList.add('notification', 'is-danger');
         error.textContent = 'Fehler! Keine Projekte von der API erhalten';
         wrapper.appendChild(error);
         return;
     }
+
     projects.content.forEach(project => {
         //Elemente erzeugen
 
@@ -158,8 +166,8 @@ const updateHomeGui = projects => {
         let imgwrapper = document.createElement('figure');
         imgwrapper.classList.add('image', 'is-16by9');
         let img = document.createElement('img');
-        img.setAttribute('src', `https://media10.simplex.tv/content/4062/4063/${project.projectId}/simvid_1_med.jpg`);
-        img.setAttribute('alt', 'Project-Thumbnail');
+        img.setAttribute('src', `https://media10.simplex.tv/content/4062/4063/${project.projectId}/simvid_1_med.jpg`); //Fehler bei fehlendem Bild noch abfangen
+        img.setAttribute('alt', `Projekt Thumbnail`);
         //Content-Container
         let content = document.createElement('div');
         content.classList.add('card-content');
@@ -232,33 +240,117 @@ const updateHomeGui = projects => {
 
 
     });
-
-
+    /*
+          <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+            <a id="pre-pag" class="pagination-previous">Previous</a>
+            <a id="next-pag" class="pagination-next">Next page</a>
+            <ul class="pagination-list">
+              <li><a id="first-pag" class="pagination-link">1</a></li>
+              <li><span class="pagination-ellipsis">&hellip;</span></li>
+              <li><a id="left-pag" class="pagination-link"></a></li>
+              <li><a id="middle-pag" class="pagination-link"></a></li>
+              <li><a id="right-pag" class="pagination-link"></a></li>
+              <li><span class="pagination-ellipsis">&hellip;</span></li>
+              <li><a id="last-pag" class="pagination-link"></a></li>
+            </ul>
+          </nav>
+    */
     //Pagnation
-    let pre = document.getElementById('pre-pag');
-    let next = document.getElementById('next-pag');
-    let first = document.getElementById('first-pag');
-    let left = document.getElementById('left-pag');
-    let middle = document.getElementById('middle-pag');
-    let right = document.getElementById('right-pag');
-    let last = document.getElementById('last-pag');
+    //Elemente Erzeugen
+    let pagNav = document.createElement('nav');
+    pagNav.classList.add('pagination', 'is-centered');
+    pagNav.setAttribute('role', 'navigation');
 
+    let pre = document.createElement('a');
+    pre.classList.add('pagination-previous');
+    pre.textContent = 'Previous';
+
+    let next = document.createElement('a');
+    next.classList.add('pagination-next');
+    next.textContent = 'Next';
+
+    let ul = document.createElement('ul');
+    ul.classList.add('pagination-list');
+
+    let firstList = document.createElement('li');
+    let first = document.createElement('a');
+    first.classList.add('pagination-link');
+    firstList.appendChild(first);
+
+    let leftList = document.createElement('li');
+    let left = document.createElement('a');
+    left.classList.add('pagination-link');
+    leftList.appendChild(left);
+
+    let middleList = document.createElement('li');
+    let middle = document.createElement('a');
+    middle.classList.add('pagination-link');
+    middleList.appendChild(middle);
+
+    let rightList = document.createElement('li');
+    let right = document.createElement('a');
+    right.classList.add('pagination-link');
+    rightList.appendChild(right);
+
+    let lastList = document.createElement('li');
+    let last = document.createElement('a');
+    last.classList.add('pagination-link');
+    lastList.appendChild(last);
+
+    let spaceOne = document.createElement('li');
+    let spaceOneSpan = document.createElement('span');
+    spaceOneSpan.classList.add('pagination-ellipsis');
+    spaceOneSpan.innerHTML = '&hellip;';
+    spaceOne.appendChild(spaceOneSpan);
+
+    let spaceTwo = document.createElement('li');
+    let spaceTwoSpan = document.createElement('span');
+    spaceTwoSpan.classList.add('pagination-ellipsis');
+    spaceTwoSpan.innerHTML = '&hellip;';
+    spaceTwo.appendChild(spaceTwoSpan);
+
+    //Zusammensetzen
+    ul.appendChild(firstList);
+    ul.appendChild(spaceOne);
+    ul.appendChild(leftList);
+    ul.appendChild(middleList);
+    ul.appendChild(rightList);
+    ul.appendChild(spaceTwo);
+    ul.appendChild(lastList);
+    pagNav.appendChild(pre);
+    pagNav.appendChild(next);
+    pagNav.appendChild(ul);
+    pagWrapper.appendChild(pagNav);
+
+
+    pre.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, (projects.number - 1), sortOption.value));
+    next.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, (projects.number + 1), sortOption.value));
+    first.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, 0, sortOption.value));
+    left.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(left.textContent - 2), sortOption.value));
+    middle.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(middle.textContent - 1), sortOption.value));
+    right.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(right.textContent), sortOption.value));
+    last.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(last.textContent - 1), sortOption.value));
+
+    console.log('Page ' + projects.number);
+    console.log('Total ' + projects.totalPages);
 
     if (projects.number === 0) {
 
-        first.classList.add('is-current');
         pre.setAttribute('disabled', 'disabled');
+        first.classList.add('is-current');
         left.textContent = projects.number + 2;
         middle.textContent = projects.number + 3;
         right.textContent = projects.number + 4;
 
     } else if ((projects.number + 1) === projects.totalPages) {
 
+        console.log('letzte Seite');
+        next.setAttribute('disabled', 'disabled');
         left.textContent = projects.number - 4;
         middle.textContent = projects.number - 3;
         right.textContent = projects.number - 2;
         last.classList.add('is-current');
-        next.setAttribute('disabled', 'disabled');
+
 
     } else {
 
@@ -268,8 +360,7 @@ const updateHomeGui = projects => {
         right.textContent = projects.number + 2;
 
     }
-    next
-
+    first.textContent = 1;
     last.textContent = projects.totalPages;
 
 }

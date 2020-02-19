@@ -22,7 +22,7 @@ const getChannelProjects = (channel, size, page, sort = 'createdDate:asc') => {
         .then(accessToken => {
 
             let options = {
-                uri: `${api}/api/v1/channels/${channel}/projects?page=${page}&size=${size}&sort=${sort}`,
+                uri: `${api}/api/v1/channels/${channel}/projects?page=${page}&size=${size}&sort=${sort}`,//Funktioniert im Moment nicht
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     Accept: "application/json"
@@ -33,7 +33,7 @@ const getChannelProjects = (channel, size, page, sort = 'createdDate:asc') => {
             return pRequest
                 .get(options)
                 .then(response => {
-                    console.log(response.statusCode);
+                    console.log(response);
                     console.log(`Get All Projects From Channel ${channel}===========================================================> END OF CALL`);
                     return response;
                 })
