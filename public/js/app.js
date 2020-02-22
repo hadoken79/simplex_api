@@ -326,9 +326,9 @@ const updateHomeGui = projects => {
     pre.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, (projects.number - 1), sortOption.value));
     next.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, (projects.number + 1), sortOption.value));
     first.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, 0, sortOption.value));
-    left.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(left.textContent - 2), sortOption.value));
+    left.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(left.textContent - 1), sortOption.value));
     middle.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(middle.textContent - 1), sortOption.value));
-    right.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(right.textContent), sortOption.value));
+    right.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(right.textContent - 1), sortOption.value));
     last.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(last.textContent - 1), sortOption.value));
 
     console.log('Page ' + projects.number);

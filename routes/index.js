@@ -4,10 +4,12 @@ const
     archiveController = require('../controllers/archiveController'),
     loginController = require('../controllers/loginController'),
     authMiddleware = require('../middleware/authMiddleware'),
-    clientController = require('../controllers/clientController');
+    clientController = require('../controllers/clientController'),
+    detailsController = require('../controllers/detailsController');
 
 router.get('/home', homeController.renderHome);
 router.get('/', homeController.renderHome);
+router.get('/details', detailsController.renderDetails);
 
 router.get('/api/allProjects', authMiddleware, clientController.getProjectsFromAllChannels);
 router.get('/api/channelProjects', authMiddleware, clientController.getProjectsFromDistinctChannel);
@@ -23,7 +25,7 @@ router.get('/archive', authMiddleware, (req, res) => {
             console.log('Case Herunterladen');
             archiveController.prepareDownload(req, res);
             break;
-            case 'Start':
+        case 'Start':
             console.log('Case beginn');
             archiveController.startDownload(req, res);
             break;

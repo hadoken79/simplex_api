@@ -15,6 +15,33 @@ const customerId = process.env.COSTOMERID;
 let countAllVideoDownloads = 0;
 
 
+const getProjectData = (projectId) => {
+
+
+    return tokenService.provideAccessToken()
+        .then(accessToken => {
+            let options = {
+                uri: `${api}/api/v1/projects/${projectId}`,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: "application/json"
+                }
+            };
+            return prequest
+                .get(options)
+                .on('error', err => {
+
+                    console.log('FEHLER download Json ' + err.message);
+                    warnLog(`Get Project-Data für ${projectId} gescheitert ${path}`);
+                })
+                .on('response', response => {
+                    return response;
+                    //console.log(response.statusCode);
+                    //console.log(response.headers['content-type']);
+                })
+        });
+}
+
 
 const getChannelProjects = (channel, size, page, sort = 'createdDate:asc') => {
 
@@ -325,5 +352,6 @@ module.exports = {
     getChannelProjects,
     getAllActiveChannels,
     getAllProjects,
-    downloadAllData
+    downloadAllData,
+    getProjectData
 };
