@@ -17,28 +17,27 @@ let countAllVideoDownloads = 0;
 
 const getProjectData = (projectId) => {
 
-
     return tokenService.provideAccessToken()
         .then(accessToken => {
             let options = {
                 uri: `${api}/api/v1/projects/${projectId}`,
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
-                    Accept: "application/json"
-                }
+                    Accept: "application/json",
+                },
+                json: true
+                
             };
-            return prequest
+            return pRequest
                 .get(options)
-                .on('error', err => {
-
-                    console.log('FEHLER download Json ' + err.message);
-                    warnLog(`Get Project-Data für ${projectId} gescheitert ${path}`);
-                })
-                .on('response', response => {
+                .then(response => {
+                    console.log(response);
                     return response;
-                    //console.log(response.statusCode);
-                    //console.log(response.headers['content-type']);
                 })
+                .catch(err => {
+                    warnLog('Could not get Project-Data ' + err);
+                });
+               
         });
 }
 
@@ -147,7 +146,8 @@ const getAllProjects = (maxDate, size, page, sort = 'createdDate:asc') => {
                 })
                 .catch(err => {
                     warnLog('Fehler bei getAllProjects ' + err);
-                    return err;
+                    //console.log('CATCH!!!!')
+                    return new Array;
                 })
         });
 }
@@ -347,11 +347,41 @@ const downloadJson = (projectId, path) => {
         });
 }
 
+const updateProject = (projectId, data) => {
+    //data muss ein gültiges Json-Objekt sein
+    console.log('id ' + projectId + ' dtat ' + data);
+    return tokenService.provideAccessToken()
+        .then(accessToken => {
+
+            let options = {
+                uri: `${api}/api/v1/projects/${projectId}`,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: "application/json"
+                },
+                body: data,
+                json: true
+            };
+
+            return pRequest
+                .post(options)
+                .then(response => {
+                    //console.log(response);
+                    console.log('Update Project ==============================================================================================> END OF CALL');
+                    return {updated: true, response};
+                })
+                .catch(err => {
+                    warnLog('Fehler bei updateProjects ' + err);
+                    return {error: true, err};
+                })
+        });
+}
 
 module.exports = {
     getChannelProjects,
     getAllActiveChannels,
     getAllProjects,
     downloadAllData,
-    getProjectData
+    getProjectData,
+    updateProject
 };

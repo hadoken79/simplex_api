@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", event => {
 
         //initial call
         console.log('INIT CALL')
-        getProjectsFromAllChannels(null, new Date().toISOString(), 30, 0, 'desc');
+        getProjectsFromAllChannels(null, new Date().toISOString(), 32, 0, 'desc');
 
         //Form
         let channelOption = document.querySelector('#channelSelector');
@@ -42,12 +42,12 @@ document.addEventListener("DOMContentLoaded", event => {
         //Event Listeners
         channelOption.onchange = () => {
             console.log('Channel ' + channelOption.value);
-            getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, 0, sort);
+            getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, 0, sort);
         }
 
         sortOption.onchange = () => {
             console.log('sorting ' + sortOption.value);
-            getProjectsFromAllChannels(channel, new Date().toISOString(), 30, 0, sortOption.value);
+            getProjectsFromAllChannels(channel, new Date().toISOString(), 32, 0, sortOption.value);
         }
     }
 
@@ -108,17 +108,28 @@ const getProjectsFromAllChannels = (channel, maxCreationDate, size, page, sort) 
             }
         })
         .then(projects => {
-            console.log('ANSWER FROM FETCH');
+            //console.log('ANSWER FROM FETCH');
             updateHomeGui(projects);
         })
         .catch(err => {
             console.log('Error at app.js getProjectsFromAllChannels ' + err);
+            updateHomeGui(new Array);
         })
 
 }
 
 const updateHomeGui = projects => {
 
+    //falls api nichts liefert
+    if (projects.length < 1) {
+        let select = document.querySelector('.selectionWrapper');
+        let error = document.createElement('div');
+        error.classList.add('notification', 'is-danger');
+        error.textContent = 'Fehler! Keine Projekte von der API erhalten';
+        let main = document.querySelector('main');
+        main.insertBefore(error, select);
+        return;
+    }
 
     let head = document.querySelector('#homeheading');
     let channelOption = document.querySelector('#channelSelector');
@@ -138,14 +149,7 @@ const updateHomeGui = projects => {
         pagWrapper.removeChild(pagWrapper.firstChild);
     }
 
-    //falls api nichts liefert
-    if (projects.length < 1) {
-        let error = document.createElement('div');
-        error.classList.add('notification', 'is-danger');
-        error.textContent = 'Fehler! Keine Projekte von der API erhalten';
-        wrapper.appendChild(error);
-        return;
-    }
+
 
     projects.content.forEach(project => {
         //Elemente erzeugen
@@ -323,16 +327,7 @@ const updateHomeGui = projects => {
     pagWrapper.appendChild(pagNav);
 
 
-    pre.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, (projects.number - 1), sortOption.value));
-    next.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, (projects.number + 1), sortOption.value));
-    first.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, 0, sortOption.value));
-    left.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(left.textContent - 1), sortOption.value));
-    middle.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(middle.textContent - 1), sortOption.value));
-    right.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(right.textContent - 1), sortOption.value));
-    last.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 30, parseInt(last.textContent - 1), sortOption.value));
 
-    console.log('Page ' + projects.number);
-    console.log('Total ' + projects.totalPages);
 
     if (projects.number === 0) {
 
@@ -346,9 +341,9 @@ const updateHomeGui = projects => {
 
         console.log('letzte Seite');
         next.setAttribute('disabled', 'disabled');
-        left.textContent = projects.number - 4;
-        middle.textContent = projects.number - 3;
-        right.textContent = projects.number - 2;
+        left.textContent = projects.number - 2;
+        middle.textContent = projects.number - 1;
+        right.textContent = projects.number;
         last.classList.add('is-current');
 
 
@@ -362,6 +357,15 @@ const updateHomeGui = projects => {
     }
     first.textContent = 1;
     last.textContent = projects.totalPages;
+
+    pre.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, (projects.number - 1), sortOption.value));
+    next.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, (projects.number + 1), sortOption.value));
+    first.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, 0, sortOption.value));
+    left.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, parseInt(left.textContent - 1), sortOption.value));
+    middle.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, parseInt(middle.textContent - 1), sortOption.value));
+    right.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, parseInt(right.textContent - 1), sortOption.value));
+    last.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, parseInt(last.textContent - 1), sortOption.value));
+
 
 }
 

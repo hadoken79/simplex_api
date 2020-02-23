@@ -10,6 +10,7 @@ const
 router.get('/home', homeController.renderHome);
 router.get('/', homeController.renderHome);
 router.get('/details', detailsController.renderDetails);
+router.post('/details', detailsController.updateDetails);
 
 router.get('/api/allProjects', authMiddleware, clientController.getProjectsFromAllChannels);
 router.get('/api/channelProjects', authMiddleware, clientController.getProjectsFromDistinctChannel);

@@ -1,83 +1,106 @@
 {{> head}}
 
 <body>
+    {{>onlythesmall}}
     <main class="container">
         {{> nav }}
         <h3 class="title is-4">{{heading}}</h3>
         <p id='homeheading'>
             Hier können die Comscorefelder bearbeitet werden.
         </p>
+        {{#if updated}}<div class="notification is-primary">Projekt gespeichert</div>{{/if}}
+        {{#if error}}<div class="notification is-danger">Fehler bei Updateversuch</div>{{/if}}
 
-        <form>
+        <form action="details" method="post">
             <div class="field">
                 <div class="control">
+                    <label class="label">Simplex-ID</label>
+                    <input class="input" type="text" placeholder="Text input" value="{{project.projectId}}" name="projectId" maxlength="20" readonly required>
+                </div>
+                <div class="control">
                     <label class="label">Titel</label>
-                    <input class="input" type="text" placeholder="Text input">
+                    <input class="input" type="text" placeholder="Text input" value="{{project.title}}" name="title" maxlength="20" required>
                 </div>
 
-                <label class="label">Message</label>
+                <label class="label">Description</label>
                 <div class="control">
-                    <textarea class="textarea" placeholder="Textarea"></textarea>
+                    <textarea class="textarea" placeholder="Textarea" maxlength="1500" name="description">{{project.description}}</textarea>
                 </div>
             </div>
 
 
+            <!--Comscore Feld-->
             <div class="field is-grouped">
                 <div class="control">
-                    <label class="label">Feld 1</label>
-                    <input class="input" type="text" placeholder="Text input">
+                    <label class="label">Content-ID</label>
+                    <input class="input" type="text" placeholder="Text input" name="ns_st_ci" maxlength="20" value="{{details.ns_st_ci}}" required>
                 </div>
                 <div class="control">
-                    <label class="label">Feld 2</label>
-                    <input class="input" type="text" placeholder="Text input">
+                    <label class="label">Clip lenght</label>
+                    <input class="input" type="text" placeholder="Text input" name="ns_st_cl" maxlength="20" value="{{details.ns_st_cl}}" required>
                 </div>
 
                 <div class="control">
-                    <label class="label">Feld 1</label>
-                    <input class="input" type="text" placeholder="Text input">
+                    <label class="label">Classification Type</label>
+                    <input class="input" type="text" placeholder="Text input" name="ns_st_ct" maxlength="20" value="{{details.ns_st_ct}}" required>
                 </div>
                 <div class="control">
-                    <label class="label">Feld 2</label>
-                    <input class="input" type="text" placeholder="Text input">
+                    <label class="label">Channel-ID</label>
+                    <input class="input" type="text" placeholder="Text input" name="ns_st_stc" maxlength="20" value="{{details.ns_st_stc}}" required>
                 </div>
             </div>
 
             <div class="field is-grouped">
                 <div class="control">
-                    <label class="label">Feld 1</label>
-                    <input class="input" type="text" placeholder="Text input">
+                    <label class="label">Programm ID</label>
+                    <input class="input" type="text" placeholder="Text input" name="ns_st_tpr" maxlength="20" value="{{details.ns_st_tpr}}" required>
                 </div>
                 <div class="control">
-                    <label class="label">Feld 2</label>
-                    <input class="input" type="text" placeholder="Text input">
+                    <label class="label">Episode ID</label>
+                    <input class="input" type="text" placeholder="Text input" name="ns_st_tep" maxlength="20" value="{{details.ns_st_tep}}" required>
                 </div>
 
                 <div class="control">
-                    <label class="label">Feld 1</label>
-                    <input class="input" type="text" placeholder="Text input">
+                    <label class="label">TV Air date</label>
+                    <input class="input" type="text" placeholder="Text input" name="ns_st_tdt" maxlength="20" value="{{details.ns_st_tdt}}" required>
                 </div>
                 <div class="control">
-                    <label class="label">Feld 2</label>
-                    <input class="input" type="text" placeholder="Text input">
+                    <label class="label">Digital Air date</label>
+                    <input class="input" type="text" placeholder="Text input" name="ns_st_ddt" maxlength="20" value="{{details.ns_st_ddt}}" required>
                 </div>
             </div>
+
             <div class="field is-grouped">
+                <div class="control">
+                    <label class="label">OnAir Time</label>
+                    <input class="input" type="text" placeholder="Text input" name="ns_st_tm" maxlength="20" value="{{details.ns_st_tm}}" required>
+                </div>
+                <div class="control">
+                    <label class="label">Channel-Name</label>
+                    <input class="input" type="text" placeholder="Text input" name="ns_st_st" maxlength="20" value="{{details.ns_st_st}}" required>
+                </div>
+
+                <div class="control">
+                    <label class="label">Programm Name</label>
+                    <input class="input" type="text" placeholder="Text input" name="ns_st_pr" maxlength="100" value="{{details.ns_st_pr}}" required>
+                </div>
+                <!-- ! Die folgenden beiden Elemente müssen die Rheienfolge im Objekt tauschen, wurden nur für die Darstellung so angeordnet-->
+                <div class="control">
+                    <label class="label">Season Number</label>
+                    <input class="input" type="text" placeholder="Text input" name="ns_st_sn" maxlength="20" value="{{details.ns_st_sn}}" required>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Episode Title</label>
+                <div class="control">
+                    <textarea class="textarea" placeholder="Textarea" name="ns_st_ep" maxlength="1500">{{details.ns_st_ep}}</textarea>
+                </div>
+            </div>
+         
                 <div class="control">
                     <button class="button is-link" value="Submit">Update</button>
                 </div>
-                <div class="control">
-                    <button class="button is-link is-light">Cancel</button>
-                </div>
-            </div>
-
-
         </form>
-
-
-
-
-
-
     </main>
 </body>
 

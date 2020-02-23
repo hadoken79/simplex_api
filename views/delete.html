@@ -7,18 +7,22 @@
         {{> nav }}
         <h3 id='dlTitle' class="title is-4">{{heading}}</h3>
 
-        <form method="get" action="/archive">
+        <form method="post" action="/delete">
             <div class="selectionWrapper">
 
-                <div class="pickerWrapper selectionItem">
-                    <input type="date" class="is-inline" name="maxDate" value={{pickerVal}}>
-                </div>
                 <div class="selectionItem">
-                    <input type="Submit" id='showProjects' class="button is-primary" name="do" value="Show"></button>
-                    <input type="Submit" class="button is-danger" name="do" value="Download"></button>
+                    <select id="folderSelector">
+                        {{#each folders}}                    
+                        <option value={{this.number}}>{{this.number}}</option>
+                        {{/each}}
+                      </select>
                 </div>
 
-                <!--DownloadModal-->
+                <div class="selectionItem">
+                    <input type="Submit" class="button is-danger" name="do" value="Delete"></button>
+                </div>
+
+                <!--DeleteModal-->
                 <div class="modal {{#if modal}}is-active{{/if}}">
                     <div class="modal-background"></div>
                     <div class="modal-card">
@@ -28,22 +32,10 @@
                         </header>
                         <section class="modal-card-body">
                             {{#if dlEnable}}
-                            Möchtest Du alle Projekte mit Erstellungsdatum älter als <strong>{{pickerVal}}</strong>
-                            herunterladen?
-                            <br><strong>{{projects}}</strong> Elemente.<br>
-                            <b>Wähle einen Ordner und klicke Start..</b>
-                            <br>
-                            <div class="select">
-                                <select name="folder">
-                                    {{#each folders}}
-                                    <option>{{this}}</option>
-                                    {{/each}}
-                                    <option selected>neuer Ordner</option>
-                                </select>
-                            </div>
-                            {{else}}
-                            Kein Datum ausgewählt.
-                            {{/if}}
+                            Möchtest Du alle Projekte aus Durchgangsordner <strong>{{}}</strong>
+                            von Simplex löschen?
+                            <br><strong>{{}}</strong> Elemente.<br>
+                            
                         </section>
                         <footer class="modal-card-foot">
                             <input type="Submit" class="button is-success" name="do" value="Start"

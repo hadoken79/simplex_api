@@ -8,9 +8,8 @@ const renderHome = (req, res) => {
 
     simplexService.getAllActiveChannels()
         .then(channeldata => {
-            simplexService.getAllProjects(new Date().toISOString(), 30, pageNum, `createdDate:${sort}`)
+            simplexService.getAllProjects(new Date().toISOString(), 32, pageNum, `createdDate:${sort}`)
                 .then(projects => {
-
                     res.render('home', {
                         title: 'Simplex-Api',
                         heading: 'Video Projekte auf Simplex',
@@ -18,7 +17,10 @@ const renderHome = (req, res) => {
                         channels: channeldata.content,
                         projects: projects
                     });
-                });
+                })
+                .catch(err => {
+
+                })
         });
 }
 

@@ -64,3 +64,35 @@
 2020-02-18 15:08:04.005 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
 2020-02-18 15:08:04.017 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
 2020-02-18 15:08:04.023 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-22 07:45:22.758 WARN  Could not get Project-Data StatusCodeError: 403 - "{\"statusCode\":403,\"statusDescription\":\"Forbidden\",\"errorMessage\":\"You don't have permission to access this data on this server\"}" 
+2020-02-22 07:45:58.387 WARN  Could not get Project-Data StatusCodeError: 403 - "{\"statusCode\":403,\"statusDescription\":\"Forbidden\",\"errorMessage\":\"You don't have permission to access this data on this server\"}" 
+2020-02-22 07:47:20.428 WARN  Could not get Project-Data StatusCodeError: 403 - "{\"statusCode\":403,\"statusDescription\":\"Forbidden\",\"errorMessage\":\"You don't have permission to access this data on this server\"}" 
+2020-02-22 07:48:04.371 WARN  Could not get Project-Data StatusCodeError: 403 - "{\"statusCode\":403,\"statusDescription\":\"Forbidden\",\"errorMessage\":\"You don't have permission to access this data on this server\"}" 
+2020-02-22 07:58:02.555 WARN  Could not get Project-Data StatusCodeError: 403 - {"statusCode":403,"statusDescription":"Forbidden","errorMessage":"You don't have permission to access this data on this server"} 
+2020-02-22 07:59:32.726 WARN  Could not get Project-Data StatusCodeError: 403 - {"statusCode":403,"statusDescription":"Forbidden","errorMessage":"You don't have permission to access this data on this server"} 
+2020-02-22 08:05:53.033 WARN  Could not get Project-Data StatusCodeError: 403 - {"statusCode":403,"statusDescription":"Forbidden","errorMessage":"You don't have permission to access this data on this server"} 
+2020-02-22 09:04:10.894 WARN  Fehler bei getAllProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-22 09:04:11.204 WARN  Fehler bei getAllProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-22 09:04:40.144 WARN  Fehler bei getAllProjects StatusCodeError: 401 - undefined 
+2020-02-22 09:04:40.428 WARN  Fehler bei getAllProjects StatusCodeError: 401 - undefined 
+2020-02-22 09:08:02.598 WARN  Fehler bei getAllProjects StatusCodeError: 401 - undefined 
+2020-02-22 09:08:02.879 WARN  Fehler bei getAllProjects StatusCodeError: 401 - undefined 
+2020-02-22 09:10:52.235 WARN  Fehler bei getAllProjects StatusCodeError: 401 - undefined 
+2020-02-22 09:10:52.527 WARN  Fehler bei getAllProjects StatusCodeError: 401 - undefined 
+2020-02-22 09:11:48.695 WARN  Fehler bei getAllProjects StatusCodeError: 401 - undefined 
+2020-02-22 09:11:49.061 WARN  Fehler bei getAllProjects StatusCodeError: 401 - undefined 
+2020-02-22 09:12:46.858 WARN  Fehler bei getAllProjects StatusCodeError: 401 - undefined 
+2020-02-22 09:12:47.166 WARN  Fehler bei getAllProjects StatusCodeError: 401 - undefined 
+2020-02-22 09:13:58.208 WARN  Fehler bei getAllProjects StatusCodeError: 401 - undefined 
+2020-02-22 09:13:58.486 WARN  Fehler bei getAllProjects StatusCodeError: 401 - undefined 
+2020-02-22 09:26:46.303 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-22 09:26:46.615 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-22 09:27:05.217 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-22 09:27:05.497 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Page index must not be less than zero!"} 
+2020-02-22 12:44:00.274 WARN  Fehler bei updateProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-22 12:44:00.383 WARN  Could not get Project-Data StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-22 12:45:57.364 WARN  Fehler bei updateProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-22 12:45:57.480 WARN  Could not get Project-Data StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-22 12:48:46.718 WARN  Fehler bei updateProjects StatusCodeError: 400 - {"statusCode":400,"statusDescription":"Bad Request","errorMessage":"Unrecognized field \"data\"  (11 known properties: \"state\", \"details\", \"isPublic\", \"title\", \"dateTo\", \"keyWords\", \"description\", \"authScheme\", \"enabled\", \"dateFrom\", \"eventDate\"])"} 
+2020-02-22 13:04:37.342 WARN  Fehler bei updateProjects StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
+2020-02-22 13:04:37.458 WARN  Could not get Project-Data StatusCodeError: 404 - "The URL requested does not exist.\nPlease contact the webpage administrator if you have any questions." 
