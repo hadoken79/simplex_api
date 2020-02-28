@@ -5,67 +5,79 @@ const
 
 
 const renderDelete = (req, res) => {
+    let folders = storageService.getFolders('storage');//muss über Docker, oder wenn nativ verwendet, über OS auf eine externe HDD gelinkt werden.
 
-
-    res.render('archive', {
+    res.render('delete', {
         title: 'Simplex-Api',
-        heading: 'Hier kannst Projekte auf Simplex anzeigen oder herunterladen.',
-        archiveActive: true,
-        info: 'Status'
+        heading: 'Projekte auf Simplex aus Ordner löschen. ',
+        deleteActive: true,
+        info: 'Status',
+        folders
     });
 
 }
 
-const prepareDeleting = (req, res) => {
+const prepareDelete = (req, res) => {
 
-
-    let maxDate = new Date().toISOString(); //fallback
-    let pickerVal = 'Kein Datum gewählt.';
-    let dlEnable = false;
-    let folders = storageService.getFolders('storage');//muss über Docker, oder wenn nativ verwendet, über OS auf eine externe HDD gelinkt werden.
-
-    if (req.query.maxDate) {
-        maxDate = req.query.maxDate + 'T12:00:00.000Z';
-        pickerVal = maxDate.slice(0, -14);
-        dlEnable = true;
+    let delEnable = false;
+    let folder = req.body.folder;
+    let files;
+    if (folder) {
+        delEnable = true;
     }
-
-    simplexService.getAllProjects(maxDate, 200, 0)
-        .then(projects => {
-            //User muss über Modal erst noch einige Angaben machen.
-            res.render('archive', {
+    console.log(req.body);
+    console.log('Selected Folder ' + folder);
+    storageService.getDeleteIds(folder)
+        .then(ids => {
+            console.log(ids);
+            files = ids.length;
+        })
+        .catch(err => {
+            delEnable = false;
+            files = 0;
+            folder = 'Kein gültiges File gefunden';
+        })
+        .then(() => {
+            //User muss über Modal bestätigen
+            res.render('delete', {
                 title: 'Simplex-Api',
-                heading: 'Projekte runterladen',
+                heading: 'Projekte löschen',
                 modalHeading: 'Bitte überprüfen!',
-                archiveActive: true,
+                deleteActive: true,
                 modal: true,
-                pickerVal,
-                folders,
-                dlEnable,
-                info: 'Auszug der Projekte (Seite 1)',
-                projects: projects.totalElements
+                folder,
+                files,
+                delEnable,
+                info: 'Auszug der Projekte'
             });
-        });
-
+        })
 }
 
-const startDeleting = (req, res) => {
+const startDelete = (req, res) => {
 
-    //console.log('Selected Folder = ' + req.query.folder);
+    let folder = req.body.selectedFolder;
+    console.log(req.body);
 
-    let folder = req.query.folder;
-    let maxDate = req.query.maxDate + 'T12:00:00.000Z';
+    storageService.getDeleteIds(folder)
+        .then(ids => {
+            simplexService.deleteAllProjets(ids)
+                .then(response => {
 
+                    res.render('delete', {
+                        title: 'Simplex-Api',
+                        heading: 'Projekte löschen',
+                        info: 'Löschen begonnen',
+                        deleteActive: true
+                    });
+                });
+        })
+        .catch(err => {
+            return false;
+        })
+}
 
-    simplexService.downloadAllData(maxDate, folder)
-        .then(response => {
-
-            //platzhalter
-            res.render('archive', {
-                title: 'Simplex-Api',
-                heading: 'Projekte runterladen',
-                info: 'Download begonnen',
-                archiveActive: true
-            });
-        });
+module.exports = {
+    renderDelete,
+    prepareDelete,
+    startDelete
 }

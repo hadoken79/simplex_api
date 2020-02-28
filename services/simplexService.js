@@ -26,7 +26,7 @@ const getProjectData = (projectId) => {
                     Accept: "application/json",
                 },
                 json: true
-                
+
             };
             return pRequest
                 .get(options)
@@ -37,7 +37,7 @@ const getProjectData = (projectId) => {
                 .catch(err => {
                     warnLog('Could not get Project-Data ' + err);
                 });
-               
+
         });
 }
 
@@ -278,7 +278,7 @@ const downloadVideo = (projectId, path, fileName, total) => {
                         }
                     }), { throttle: 1000, delay: 0 })
                     .on('progress', state => {
-                        // The state is an object that looks like this:
+                        // Struktur des progres objekts:
                         // {
                         //     percent: 0.5,               // Overall percent (between 0 to 1)
                         //     speed: 554732,              // The download speed in bytes/sec
@@ -335,13 +335,12 @@ const downloadJson = (projectId, path) => {
             request
                 .get(options)
                 .on('error', err => {
-
                     console.log('FEHLER download Json ' + err.message);
                     warnLog(`Json download für ${projectId} gescheitert ${path}`);
                 })
                 .on('response', response => {
-                    //console.log(response.statusCode);
-                    //console.log(response.headers['content-type']);
+                    console.log(response.statusCode);
+                    console.log(response.headers['content-type']);
                 })
                 .pipe(fileStream)
         });
@@ -367,14 +366,74 @@ const updateProject = (projectId, data) => {
                 .post(options)
                 .then(response => {
                     //console.log(response);
-                    console.log('Update Project ==============================================================================================> END OF CALL');
-                    return {updated: true, response};
+                    console.log('Update Project =================================================================================> END OF CALL');
+                    return { updated: true, response };
                 })
                 .catch(err => {
                     warnLog('Fehler bei updateProjects ' + err);
-                    return {error: true, err};
+                    return { error: true, err };
                 })
         });
+}
+
+const deleteAllProjets = (ids) => {
+
+    let countAllVideoDeletions = 0;
+
+    (async () => {
+
+        for (let i = 0; i < ids.length; i++) {
+            console.log('lösche ' + ids[i]);
+
+            //Simulation um Ablauf zu testen.
+            setTimeout(() => {
+                sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: ' gelöscht' }));
+                countAllVideoDeletions += 1;
+
+                //Prüfen ob alle durch sind
+                if (countAllVideoDeletions === (ids.length - 1)) {
+                    sendStatus.sendMsg(JSON.stringify({ type: 'delend', detail: 'done' }));
+                }
+            }, 1000)
+
+
+
+            tokenService.provideAccessToken()
+                .then(accessToken => {
+
+
+                    //effektiver Produktionsablauf--------------------------------------------------------------------------!
+                    /* 
+                    let options = {
+                        uri: `${api}/api/v1/projects/${ids[i]}`,
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                            Accept: "application/json"
+                        },
+                        body: data,
+                        json: true
+                    };
+                      pRequest
+                           .delete(options)
+                           .then(response => {
+                               //console.log(response);
+                               console.log('Lösche Project' + ids[i] + '==================================================================================> END OF CALL');
+                               sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: response }));
+                                 countAllVideoDeletions += 1;
+                        //Prüfen ob alle durch sind
+                        if (countAllVideoDeletions === ids.lenght -1) {
+                            sendStatus.sendMsg(JSON.stringify({ type: 'delend', detail: 'done' }));
+                        }
+                           })
+                           .catch(err => {
+                               warnLog('Fehler bei deleteProjects ' + err);
+                               sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: err }));
+                           }) */
+                });
+        }
+
+    })();
+    return Promise.resolve('Löschvorgang läuft....');
 }
 
 module.exports = {
@@ -383,5 +442,6 @@ module.exports = {
     getAllProjects,
     downloadAllData,
     getProjectData,
-    updateProject
+    updateProject,
+    deleteAllProjets
 };

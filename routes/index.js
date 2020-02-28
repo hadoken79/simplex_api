@@ -5,15 +5,13 @@ const
     loginController = require('../controllers/loginController'),
     authMiddleware = require('../middleware/authMiddleware'),
     clientController = require('../controllers/clientController'),
-    detailsController = require('../controllers/detailsController');
+    detailsController = require('../controllers/detailsController'),
+    deleteController = require('../controllers/deleteController');
 
 router.get('/home', homeController.renderHome);
 router.get('/', homeController.renderHome);
 router.get('/details', detailsController.renderDetails);
 router.post('/details', detailsController.updateDetails);
-
-router.get('/api/allProjects', authMiddleware, clientController.getProjectsFromAllChannels);
-router.get('/api/channelProjects', authMiddleware, clientController.getProjectsFromDistinctChannel);
 
 router.get('/archive', authMiddleware, (req, res) => {
 
@@ -37,11 +35,34 @@ router.get('/archive', authMiddleware, (req, res) => {
     }
 
 });
-//router.post('/archive', authMiddleware, archiveController.renderArchiveSearch);
+
+router.get('/delete', authMiddleware, deleteController.renderDelete);
+router.post('/delete', authMiddleware, (req, res) => {
+
+    switch (req.body.do) {
+
+        case 'Delete':
+            console.log('Case Herunterladen');
+            deleteController.prepareDelete(req, res);
+            break;
+        case 'Start':
+            console.log('Case beginn');
+            deleteController.startDelete(req, res);
+            break;
+        default:
+            console.log('Case Default');
+            deleteController.renderDelete(req, res);
+            break;
+    }
+
+});
 
 router.get('/login', loginController.renderLogin);
 router.post('/login', loginController.submitLogin);
+
 //------Api Calls von Client-----//
+router.get('/api/allProjects', authMiddleware, clientController.getProjectsFromAllChannels);
+router.get('/api/channelProjects', authMiddleware, clientController.getProjectsFromDistinctChannel);
 
 
 module.exports = router;

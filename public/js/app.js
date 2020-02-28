@@ -18,6 +18,13 @@ document.addEventListener("DOMContentLoaded", event => {
             let title = document.getElementById('statusBar');
             panel.classList.replace('is-info', 'is-primary');
             title.innerHTML = ('download fertig');
+        } else if (message.type === 'delstat') {
+            updateDeleteGui(message);
+        } else if (message.type == 'delend') {
+            let panel = document.getElementById('deleteStatus');
+            let title = document.getElementById('delStatusBar');
+            panel.classList.replace('is-info', 'is-primary');
+            title.innerHTML = ('Löschen fertig');
         }
     }
 
@@ -86,7 +93,7 @@ document.addEventListener("DOMContentLoaded", event => {
 
 //Methods
 const getProjectsFromAllChannels = (channel, maxCreationDate, size, page, sort) => {
-
+    let failhappend; //für UpdateGui
     let url;
     if (channel) {
         url = `/api/channelProjects?channel=${channel}&size=${size}&page=${page}&sort=${sort}`;
@@ -101,34 +108,42 @@ const getProjectsFromAllChannels = (channel, maxCreationDate, size, page, sort) 
         },
     })
         .then(response => {
+            console.log('RESPONSE ' + response.status);
             if (response.status != '200') {
                 Promise.reject('Error from Simplexcall');
             } else {
-                return response.json();
+                let projects = response.json();
+                return projects;
             }
         })
         .then(projects => {
+            failhappend = false;
+            console.log(projects.content.length);
+            if (!projects.content) {
+                console.log('<1');
+                failhappend = true;
+            }
             //console.log('ANSWER FROM FETCH');
-            updateHomeGui(projects);
+            updateHomeGui(projects, failhappend);
         })
         .catch(err => {
+            failhappend = true;
             console.log('Error at app.js getProjectsFromAllChannels ' + err);
-            updateHomeGui(new Array);
+            updateHomeGui(new Array, failhappend);
         })
 
 }
 
-const updateHomeGui = projects => {
+const updateHomeGui = (projects, failhappend) => {
 
     //falls api nichts liefert
-    if (projects.length < 1) {
-        let select = document.querySelector('.selectionWrapper');
-        let error = document.createElement('div');
-        error.classList.add('notification', 'is-danger');
-        error.textContent = 'Fehler! Keine Projekte von der API erhalten';
-        let main = document.querySelector('main');
-        main.insertBefore(error, select);
+
+
+    if (failhappend) {
+        showError();
         return;
+    } else {
+        hideError();
     }
 
     let head = document.querySelector('#homeheading');
@@ -244,21 +259,7 @@ const updateHomeGui = projects => {
 
 
     });
-    /*
-          <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-            <a id="pre-pag" class="pagination-previous">Previous</a>
-            <a id="next-pag" class="pagination-next">Next page</a>
-            <ul class="pagination-list">
-              <li><a id="first-pag" class="pagination-link">1</a></li>
-              <li><span class="pagination-ellipsis">&hellip;</span></li>
-              <li><a id="left-pag" class="pagination-link"></a></li>
-              <li><a id="middle-pag" class="pagination-link"></a></li>
-              <li><a id="right-pag" class="pagination-link"></a></li>
-              <li><span class="pagination-ellipsis">&hellip;</span></li>
-              <li><a id="last-pag" class="pagination-link"></a></li>
-            </ul>
-          </nav>
-    */
+
     //Pagnation
     //Elemente Erzeugen
     let pagNav = document.createElement('nav');
@@ -419,5 +420,32 @@ const updateArchiveGui = stats => {
         progressbar.value = 100;
         progressbar.classList.replace('is-warning', 'is-primary')
     }
+
+}
+
+const showError = () => {
+    let main = document.querySelector('main');
+    let select = document.querySelector('.selectionWrapper');
+    let error = document.createElement('div');
+    error.id = "errorDiv";
+    error.classList.add('notification', 'is-danger');
+    error.textContent = 'Fehler! Keine Projekte von der API erhalten';
+    main.insertBefore(error, select);
+}
+
+const hideError = () => {
+
+    if (document.getElementById('errorDiv')) {
+        let errorDiv = document.getElementById('errorDiv');
+        errorDiv.parentElement.removeChild(errorDiv);
+    }
+}
+
+const updateDeleteGui = stats => {
+
+    let panel = document.getElementById('deleteStatus');
+    let info = document.createElement('p');
+    info.textContent = `${stats.project} | ${stats.msg}`;
+    panel.appendChild(info);
 
 }
