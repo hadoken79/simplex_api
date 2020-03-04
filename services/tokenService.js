@@ -11,9 +11,9 @@ let expiresIn = 1;
 
 const getAccessToken = (username, password) => {
     console.log('Try to Create a new Token');
-    //console.log(`${username} | ${password}`);
-    username = process.env.USER;
-    password = process.env.PASSWORD;
+    console.log(`${username} | ${password}`);
+    //username = process.env.USER;
+    //password = process.env.PASSWORD;
     let options = {
         uri: `${api}/login`,
         form: {

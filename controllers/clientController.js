@@ -8,9 +8,11 @@ const getProjectsFromAllChannels = (req, res) => {
     let size = req.query.size;
     let pageNum = req.query.page;
     let sort = req.query.sort;
+    let text = req.query.text;
+    console.log('TEXT ' + text);
 
 
-    simplexService.getAllProjects(maxCreateDate, size, pageNum, `createdDate:${sort}`)
+    simplexService.getAllProjects(maxCreateDate, size, pageNum, `createdDate:${sort}`, text)
         .then(projects => {
 
             res.status(200).send(projects);

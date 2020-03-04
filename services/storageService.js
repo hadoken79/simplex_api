@@ -20,12 +20,14 @@ const getDeleteIds = (folder) => {
 const createWorkFolder = folder => {
     return new Promise((resolve, reject) => {
         let folders = getFolders('storage');
+
+        let nfolders = folders.filter(f => !isNaN(parseInt(f)));
         folders.sort((a, b) => a - b);
 
 
         if (folder === 'neuer Ordner') {
-            if (folders.length > 0) {
-                folder = parseInt(folders[folders.length - 1]) + 1;
+            if (nfolders.length > 0) {
+                folder = parseInt(nfolders[nfolders.length - 1]) + 1;
             } else {
                 folder = '1';
             }

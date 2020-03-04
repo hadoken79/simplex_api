@@ -1,4 +1,7 @@
 {
     "verbose": true,
-    "ignore": ["storage/", "eventlog.log"]
+    "ignore": [
+        "storage/",
+        "./eventlog.log"
+    ]
 }

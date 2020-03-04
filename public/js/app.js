@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", event => {
     //Verbindung mit Websocketserver.js Port 8080 (nativ html5)
     let ws = new WebSocket('ws://localhost:8080');
     ws.onopen = () => {
-        console.log('websocket is connected ...');
+        console.log('websocket connected ...');
         ws.send('client listening');
     }
 
@@ -34,13 +34,15 @@ document.addEventListener("DOMContentLoaded", event => {
     if (document.getElementById('pag-wrapper')) {
 
         //initial call
-        console.log('INIT CALL')
+        //console.log('INIT CALL')
         getProjectsFromAllChannels(null, new Date().toISOString(), 32, 0, 'desc');
 
         //Form
         let channelOption = document.querySelector('#channelSelector');
         let sortOption = document.querySelector('#sortingSelector');
+        let searchField = document.querySelector('#searchText');
 
+        let searchText = null;
         let channel = channelOption.value;
         let sort = sortOption.value;
 
@@ -48,13 +50,17 @@ document.addEventListener("DOMContentLoaded", event => {
 
         //Event Listeners
         channelOption.onchange = () => {
-            console.log('Channel ' + channelOption.value);
-            getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, 0, sort);
+            //console.log('Channel ' + channelOption.value);
+            getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, 0, sort, searchText);
         }
 
         sortOption.onchange = () => {
-            console.log('sorting ' + sortOption.value);
-            getProjectsFromAllChannels(channel, new Date().toISOString(), 32, 0, sortOption.value);
+            //console.log('sorting ' + sortOption.value);
+            getProjectsFromAllChannels(channel, new Date().toISOString(), 32, 0, sortOption.value, searchText);
+        }
+        searchField.onkeyup = () => {
+            searchText = searchField.value;
+            getProjectsFromAllChannels(channel, new Date().toISOString(), 32, 0, sortOption.value, searchText);
         }
     }
 
@@ -75,7 +81,7 @@ document.addEventListener("DOMContentLoaded", event => {
     calendars.forEach(calendar => {
 
         calendar.on('date:selected', date => {
-            console.log(date);
+            //console.log(date);
         });
     });
 
@@ -84,7 +90,7 @@ document.addEventListener("DOMContentLoaded", event => {
     const element = document.querySelector('#maxDatePicker');
     if (element) {
         element.bulmaCalendar.on('select', datepicker => {
-            console.log(datepicker.data.value());
+            //console.log(datepicker.data.value());
             maxDate = datepicker.data.value();
         });
     }
@@ -92,13 +98,23 @@ document.addEventListener("DOMContentLoaded", event => {
 });
 
 //Methods
-const getProjectsFromAllChannels = (channel, maxCreationDate, size, page, sort) => {
+const getProjectsFromAllChannels = (channel, maxCreationDate, size, page, sort, text = null) => {
     let failhappend; //für UpdateGui
     let url;
     if (channel) {
-        url = `/api/channelProjects?channel=${channel}&size=${size}&page=${page}&sort=${sort}`;
+        if (text) {
+            url = `/api/channelProjects?channel=${channel}&text=${text}&size=${size}&page=${page}&sort=${sort}`;
+        } else {
+            url = `/api/channelProjects?channel=${channel}&size=${size}&page=${page}&sort=${sort}`;
+        }
+
     } else {
-        url = `/api/allProjects?maxCreateDate=${maxCreationDate}&size=${size}&page=${page}&sort=${sort}`;
+        if (text) {
+            url = `/api/allProjects?text=${text}&maxCreateDate=${maxCreationDate}&size=${size}&page=${page}&sort=${sort}`;
+        } else {
+            url = `/api/allProjects?maxCreateDate=${maxCreationDate}&size=${size}&page=${page}&sort=${sort}`;
+        }
+
     }
 
     fetch(url, {
@@ -108,19 +124,19 @@ const getProjectsFromAllChannels = (channel, maxCreationDate, size, page, sort) 
         },
     })
         .then(response => {
-            console.log('RESPONSE ' + response.status);
+            //console.log('RESPONSE ' + response.status);
             if (response.status != '200') {
                 Promise.reject('Error from Simplexcall');
             } else {
+
                 let projects = response.json();
+                //console.log(projects);
                 return projects;
             }
         })
         .then(projects => {
             failhappend = false;
-            console.log(projects.content.length);
             if (!projects.content) {
-                console.log('<1');
                 failhappend = true;
             }
             //console.log('ANSWER FROM FETCH');
@@ -128,7 +144,6 @@ const getProjectsFromAllChannels = (channel, maxCreationDate, size, page, sort) 
         })
         .catch(err => {
             failhappend = true;
-            console.log('Error at app.js getProjectsFromAllChannels ' + err);
             updateHomeGui(new Array, failhappend);
         })
 
@@ -149,8 +164,11 @@ const updateHomeGui = (projects, failhappend) => {
     let head = document.querySelector('#homeheading');
     let channelOption = document.querySelector('#channelSelector');
     let channelSelection = channelOption.options[channelOption.selectedIndex].text;
-    head.textContent = `Im Channel <${channelSelection}> sind im Moment ${projects.totalElements} Projekte auf Simplex online.`;
+    head.textContent = `Im Channel < ${channelSelection}> sind im Moment ${projects.totalElements} Projekte auf Simplex online.`;
     let sortOption = document.querySelector('#sortingSelector');
+    let searchField = document.querySelector('#searchText');
+    let searchText = searchField.value;
+
 
 
     let wrapper = document.querySelector('.columns');
@@ -215,7 +233,7 @@ const updateHomeGui = (projects, failhappend) => {
         let pubTag = document.createElement('span');
         pubTag.classList.add('tag');
         pubTag.classList.add((project.published) ? ('is-success') : ('is-danger'));
-        pubTag.textContent = project.published ? 'public' : 'not public';
+        pubTag.textContent = project.published ? 'publ.' : 'not publ.';
         //footer-item-createdDate
         let daItem = document.createElement('p');
         daItem.classList.add('card-footer-item');
@@ -259,6 +277,7 @@ const updateHomeGui = (projects, failhappend) => {
 
 
     });
+
 
     //Pagnation
     //Elemente Erzeugen
@@ -317,10 +336,12 @@ const updateHomeGui = (projects, failhappend) => {
     //Zusammensetzen
     ul.appendChild(firstList);
     ul.appendChild(spaceOne);
-    ul.appendChild(leftList);
-    ul.appendChild(middleList);
-    ul.appendChild(rightList);
-    ul.appendChild(spaceTwo);
+    if (projects.totalPages > 4) {
+        ul.appendChild(leftList);
+        ul.appendChild(middleList);
+        ul.appendChild(rightList);
+        ul.appendChild(spaceTwo);
+    }
     ul.appendChild(lastList);
     pagNav.appendChild(pre);
     pagNav.appendChild(next);
@@ -340,7 +361,7 @@ const updateHomeGui = (projects, failhappend) => {
 
     } else if ((projects.number + 1) === projects.totalPages) {
 
-        console.log('letzte Seite');
+        //console.log('letzte Seite');
         next.setAttribute('disabled', 'disabled');
         left.textContent = projects.number - 2;
         middle.textContent = projects.number - 1;
@@ -359,15 +380,13 @@ const updateHomeGui = (projects, failhappend) => {
     first.textContent = 1;
     last.textContent = projects.totalPages;
 
-    pre.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, (projects.number - 1), sortOption.value));
-    next.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, (projects.number + 1), sortOption.value));
-    first.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, 0, sortOption.value));
-    left.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, parseInt(left.textContent - 1), sortOption.value));
-    middle.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, parseInt(middle.textContent - 1), sortOption.value));
-    right.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, parseInt(right.textContent - 1), sortOption.value));
-    last.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, parseInt(last.textContent - 1), sortOption.value));
-
-
+    pre.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, (projects.number - 1), sortOption.value), searchText);
+    next.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, (projects.number + 1), sortOption.value), searchText);
+    first.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, 0, sortOption.value), searchText);
+    left.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, parseInt(left.textContent - 1), sortOption.value), searchText);
+    middle.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, parseInt(middle.textContent - 1), sortOption.value), searchText);
+    right.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, parseInt(right.textContent - 1), sortOption.value)), searchText;
+    last.addEventListener('click', () => getProjectsFromAllChannels(channelOption.value, new Date().toISOString(), 32, parseInt(last.textContent - 1), sortOption.value)), searchText;
 }
 
 const updateArchiveGui = stats => {

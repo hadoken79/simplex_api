@@ -31,7 +31,7 @@ const getProjectData = (projectId) => {
             return pRequest
                 .get(options)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     return response;
                 })
                 .catch(err => {
@@ -59,8 +59,8 @@ const getChannelProjects = (channel, size, page, sort = 'createdDate:asc') => {
             return pRequest
                 .get(options)
                 .then(response => {
-                    console.log(response);
-                    console.log(`Get All Projects From Channel ${channel}===========================================================> END OF CALL`);
+                    //console.log(response);
+                    //console.log(`Get All Projects From Channel ${channel}===========================================================> END OF CALL`);
                     return response;
                 })
                 .catch(err => {
@@ -88,7 +88,7 @@ const getAllActiveChannels = () => {
                 .get(options)
                 .then(response => {
                     //console.log(response);
-                    console.log('Got all Channels=============================================================================>END OF CALL')
+                    //console.log('Got all Channels=============================================================================>END OF CALL')
                     return response;
                 })
 
@@ -117,19 +117,25 @@ const getProjectChannel = projectId => {
                     if (response.length < 1) {
                         return 0;
                     }
-                    console.log('Get Project Channel ==============================================================================================> END OF CALL');
+                    //console.log('Get Project Channel ==============================================================================================> END OF CALL');
                     return response[0].id;
                 });
         });
 };
 
-const getAllProjects = (maxDate, size, page, sort = 'createdDate:asc') => {
+const getAllProjects = (maxDate, size, page, sort = 'createdDate:asc', text = null) => {
 
+    let uri;
+    if (text) {
+        uri = `${api}/api/v1/projects?text=${text}&maxCreatedDate=${maxDate}&authorId=${authorId}&customerId=${customerId}&size=${size}&page=${page}&sort=${sort}`;
+    } else {
+        uri = `${api}/api/v1/projects?&maxCreatedDate=${maxDate}&authorId=${authorId}&customerId=${customerId}&size=${size}&page=${page}&sort=${sort}`;
+    }
     return tokenService.provideAccessToken()
         .then(accessToken => {
 
             let options = {
-                uri: `${api}/api/v1/projects?maxCreatedDate=${maxDate}&authorId=${authorId}&customerId=${customerId}&size=${size}&page=${page}&sort=${sort}`,
+                uri,
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     Accept: "application/json"
@@ -141,7 +147,7 @@ const getAllProjects = (maxDate, size, page, sort = 'createdDate:asc') => {
                 .get(options)
                 .then(response => {
                     //console.log(response);
-                    console.log('Get All Projects ==============================================================================================> END OF CALL');
+                    //console.log('Get All Projects ==============================================================================================> END OF CALL');
                     return response;
                 })
                 .catch(err => {
@@ -152,7 +158,9 @@ const getAllProjects = (maxDate, size, page, sort = 'createdDate:asc') => {
         });
 }
 
+
 const downloadAllData = async (maxDate, folder) => {
+
     countAllVideoDownloads = 0;
     let totalProjects = await getAllProjects(maxDate, 200, 0);
     let workFolderInventory = [];
@@ -165,14 +173,12 @@ const downloadAllData = async (maxDate, folder) => {
 
         for (let i = 0; i < pages; i++) {
 
-            console.log('i = ' + i);
             let projects = await getAllProjects(maxDate, 200, i);
 
             for (let project of projects.content) {
 
                 //ChannelCheck muss noch hier rein und die CreatePath Methode muss um den Channel erweitert werden
                 let channel = await getProjectChannel(project.projectId);
-                console.log('ForEach ' + project.projectId);
                 let path = await storageService.createPath(workFolder, channel, project.projectId);
 
 
@@ -190,11 +196,11 @@ const downloadAllData = async (maxDate, folder) => {
                 counter++;
 
             }
-            console.log('Artikel ' + projects.totalElements + ' gefunden ' + counter);
-            console.log('Pages ' + pages + ' seitenzähler ' + i);
-            fs.appendFile(`storage/${workFolder}/Projects.del`, JSON.stringify(workFolderInventory), (err) => {
+            //console.log('Artikel ' + projects.totalElements + ' gefunden ' + counter);
+            //console.log('Pages ' + pages + ' seitenzähler ' + i);
+            fs.writeFile(`storage/${workFolder}/Projects.del`, JSON.stringify(workFolderInventory), (err) => {
                 if (err) warnLog('Fehler beim schreiben des Projektinventars im Workfolder ' + err);
-                console.log('Projektinventar erstellt');
+                //console.log('Projektinventar erstellt');
             });
 
         }
@@ -219,7 +225,7 @@ const downloadThumbnail = (projectId, path, fileName) => {
                     .get(options)
                     .on('error', err => {
                         //Simplex hält sich nicht an ein stringentes Namenskonzept, über die Jahre änderten die immer mal wieder.
-                        console.log('FEHLER download Thumbnail ' + err.message);
+                        warnLog('FEHLER download Thumbnail ' + err.message);
                         if (err.statusCode === 404) {
                             let altFileName = '';
 
@@ -235,7 +241,6 @@ const downloadThumbnail = (projectId, path, fileName) => {
                     })
                     .pipe(fileStream)
             } catch (error) {
-                console.log('PIPE error ' + error);
                 warnLog(`Fehler bei Versuch Thumbnail für ${path} herunterzuladen`);
                 Promise.reject(`Fehler bei Versuch Thumbnail für ${path} herunterzuladen`);
             }
@@ -260,7 +265,7 @@ const downloadVideo = (projectId, path, fileName, total) => {
                     .get(options)
                     .on('error', err => {
                         //Simplex hält sich nicht an ein stringentes Namenskonzept, über die Jahre änderten die immer mal wieder.
-                        console.log('FEHLER download Thumbnail ' + err.message);
+                        warnLog('FEHLER download Thumbnail ' + err.message);
                         if (err.statusCode === 404) {
                             let altFileName = '';
 
@@ -295,7 +300,6 @@ const downloadVideo = (projectId, path, fileName, total) => {
                         sendStatus.sendMsg(JSON.stringify(status));
                     })
                     .on('error', err => {
-                        console.log('Fehler Download Progress Video ' + err)
                         warnLog('Fehler bei Download ' + projectId);
                     })
                     .on('end', () => {
@@ -312,7 +316,7 @@ const downloadVideo = (projectId, path, fileName, total) => {
                     });
 
             } catch (error) {
-                console.log('PIPE error ' + error);
+                //console.log('PIPE error ' + error);
                 warnLog(`Fehler bei Versuch Video für ${path} herunterzuladen`);
                 Promise.reject(`Fehler bei Versuch Video für ${path} herunterzuladen`);
             }
@@ -335,12 +339,12 @@ const downloadJson = (projectId, path) => {
             request
                 .get(options)
                 .on('error', err => {
-                    console.log('FEHLER download Json ' + err.message);
+                    //console.log('FEHLER download Json ' + err.message);
                     warnLog(`Json download für ${projectId} gescheitert ${path}`);
                 })
                 .on('response', response => {
-                    console.log(response.statusCode);
-                    console.log(response.headers['content-type']);
+                    //console.log(response.statusCode);
+                    //console.log(response.headers['content-type']);
                 })
                 .pipe(fileStream)
         });
@@ -348,7 +352,7 @@ const downloadJson = (projectId, path) => {
 
 const updateProject = (projectId, data) => {
     //data muss ein gültiges Json-Objekt sein
-    console.log('id ' + projectId + ' dtat ' + data);
+    //console.log('id ' + projectId + ' dtat ' + data);
     return tokenService.provideAccessToken()
         .then(accessToken => {
 
@@ -366,7 +370,7 @@ const updateProject = (projectId, data) => {
                 .post(options)
                 .then(response => {
                     //console.log(response);
-                    console.log('Update Project =================================================================================> END OF CALL');
+                    //console.log('Update Project =================================================================================> END OF CALL');
                     return { updated: true, response };
                 })
                 .catch(err => {
@@ -383,52 +387,72 @@ const deleteAllProjets = (ids) => {
     (async () => {
 
         for (let i = 0; i < ids.length; i++) {
-            console.log('lösche ' + ids[i]);
-
-            //Simulation um Ablauf zu testen.
-            setTimeout(() => {
-                sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: ' gelöscht' }));
-                countAllVideoDeletions += 1;
-
-                //Prüfen ob alle durch sind
-                if (countAllVideoDeletions === (ids.length - 1)) {
-                    sendStatus.sendMsg(JSON.stringify({ type: 'delend', detail: 'done' }));
-                }
-            }, 1000)
-
+            //console.log('lösche ' + ids[i]);
 
 
             tokenService.provideAccessToken()
                 .then(accessToken => {
 
-
-                    //effektiver Produktionsablauf--------------------------------------------------------------------------!
-                    /* 
+                    //prüfen ob auf S3
                     let options = {
-                        uri: `${api}/api/v1/projects/${ids[i]}`,
+                        uri: `https://telebasel-archiv.s3.eu-central-1.amazonaws.com/${ids[i]}//${ids[i]}.json`,
                         headers: {
-                            Authorization: `Bearer ${accessToken}`,
                             Accept: "application/json"
                         },
-                        body: data,
                         json: true
                     };
-                      pRequest
-                           .delete(options)
-                           .then(response => {
-                               //console.log(response);
-                               console.log('Lösche Project' + ids[i] + '==================================================================================> END OF CALL');
-                               sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: response }));
-                                 countAllVideoDeletions += 1;
-                        //Prüfen ob alle durch sind
-                        if (countAllVideoDeletions === ids.lenght -1) {
-                            sendStatus.sendMsg(JSON.stringify({ type: 'delend', detail: 'done' }));
-                        }
-                           })
-                           .catch(err => {
-                               warnLog('Fehler bei deleteProjects ' + err);
-                               sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: err }));
-                           }) */
+                    pRequest
+                        .get(options)
+                        .then(response => {
+                            //console.log(response);
+                            if (response.statusCode === 200) {
+                                //Simulation um Ablauf zu testen.=================/
+                                setTimeout(() => {
+                                    sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: ' gelöscht' }));
+                                    countAllVideoDeletions += 1;
+
+                                    //Prüfen ob alle durch sind
+                                    if (countAllVideoDeletions === (ids.length - 1)) {
+                                        sendStatus.sendMsg(JSON.stringify({ type: 'delend', detail: 'done' }));
+                                    }
+                                }, 1000)
+                                //=================================================/
+                                /*
+                   //Löschen 
+                   let options = {
+                       uri: `${api}/api/v1/projects/${ids[i]}`,
+                       headers: {
+                           Authorization: `Bearer ${accessToken}`,
+                           Accept: "application/json"
+                       },
+                       json: true
+                   };
+                     pRequest
+                          .delete(options)
+                          .then(response => {
+                              //console.log(response);
+                              console.log('Lösche Project' + ids[i] + '==================================================================================> END OF CALL');
+                              sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: response }));
+                                countAllVideoDeletions += 1;
+                       //Prüfen ob alle durch sind
+                       if (countAllVideoDeletions === ids.lenght -1) {
+                           sendStatus.sendMsg(JSON.stringify({ type: 'delend', detail: 'done' }));
+                       }
+                          })
+                          .catch(err => {
+                              warnLog('Fehler bei deleteProjects ' + err);
+                              sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: err }));
+                          }) */
+                            }
+
+                        })
+                        .catch(err => {
+                            sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: 'Nicht auf S3 vorhanden, wird nicht gelöscht' }));
+                            warnLog('Fehler bei Amazon Check ' + err);
+                            warnLog(`${ids[i]} wurde nicht auf S3 gefunden und darum nicht gelöscht.`);
+                        })
+
+
                 });
         }
 
