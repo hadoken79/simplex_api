@@ -5,7 +5,7 @@ const
     routing = require('./routes'),
     session = require('express-session'),
     path = require('path'),
-    webSocketServer = require('ws').Server;;
+    webSocketServer = require('ws').Server;
 
 
 require('dotenv').config();
@@ -29,10 +29,15 @@ const sessionToLocalsCopy = (req, res, next) => {
 */
 
 server.use(session({
-    secret: process.env.SESSION_SECRET || 'sEt_seSSI0n_SecRET_NoW!',
+    secret: process.env.SESSION_SECRET || 'SSSSssssshhhhhhh!',
     saveUninitialized: true,
-    resave: false
+    resave: false,
+    path: '/', 
+    httpOnly: true, 
+    secure: false, 
+    maxAge: 0
 }));
+
 //server.use(sessionToLocalsCopy);
 server.use(express.static(path.join(__dirname, 'public'))); //für statische Dateien die zum browser ausgeliefert werden sollen, css/js/img prefix public im Pfad weg lassen
 server.use(express.static(path.join(__dirname, 'node_modules'))); // für css/js in modules

@@ -20,7 +20,15 @@ const renderHome = (req, res) => {
                 })
                 .catch(err => {
                 })
-        });
+        })
+        .catch(fail => {
+            res.render('login', {
+                title: 'Simplex-Api',
+                heading: fail,
+                loginActive: false,
+                loginFailed: req.body.loginFailed
+            });
+        })
 }
 
 

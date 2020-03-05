@@ -69,7 +69,15 @@ const startDelete = (req, res) => {
                         info: 'Löschen begonnen',
                         deleteActive: true
                     });
-                });
+                })
+                .catch(fail => {
+                    res.render('login', {
+                        title: 'Simplex-Api',
+                        heading: fail,
+                        loginActive: false,
+                        loginFailed: req.body.loginFailed
+                    });
+                })
         })
         .catch(err => {
             return false;

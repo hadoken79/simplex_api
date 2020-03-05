@@ -8,10 +8,10 @@ const
     detailsController = require('../controllers/detailsController'),
     deleteController = require('../controllers/deleteController');
 
-router.get('/home', homeController.renderHome);
-router.get('/', homeController.renderHome);
-router.get('/details', detailsController.renderDetails);
-router.post('/details', detailsController.updateDetails);
+router.get('/home', authMiddleware, homeController.renderHome);
+router.get('/', authMiddleware, homeController.renderHome);
+router.get('/details', authMiddleware, detailsController.renderDetails);
+router.post('/details', authMiddleware, detailsController.updateDetails);
 
 router.get('/archive', authMiddleware, (req, res) => {
 
@@ -59,6 +59,8 @@ router.post('/delete', authMiddleware, (req, res) => {
 
 router.get('/login', loginController.renderLogin);
 router.post('/login', loginController.submitLogin);
+
+router.get('/logout', loginController.logout);
 
 //------Api Calls von Client-----//
 router.get('/api/allProjects', authMiddleware, clientController.getProjectsFromAllChannels);

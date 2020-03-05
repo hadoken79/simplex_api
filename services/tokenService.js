@@ -10,8 +10,8 @@ let expiresIn = 1;
 //Initialcall oder wenn Refreshtoken nicht mehr gültig, an api um ein token zu erzeugen (30min gültig)
 
 const getAccessToken = (username, password) => {
-    console.log('Try to Create a new Token');
-    console.log(`${username} | ${password}`);
+    //console.log('Try to Create a new Token');
+    //console.log(`${username} | ${password}`);
     //username = process.env.USER;
     //password = process.env.PASSWORD;
     let options = {
@@ -80,12 +80,7 @@ const provideAccessToken = () => {
                 .catch(err => {
                     if (err.statusCode === 401) {
                         console.log('provideToken | unable to refresh Token');
-                        getAccessToken()
-                            .then(() => {
-                                resolve(accessToken);
-                            }).catch(() => {
-                                reject('Could not Create or Refresh a Token');
-                            })
+                        reject('Token kann nicht erneuert werden, melde dich wieder an.');
                     }
                 });
         }
@@ -95,8 +90,15 @@ const provideAccessToken = () => {
 
 };
 
+const destroyTokens = () => {
+    this.accessToken = '';
+    this.refreshToken = '';
+    this.expiresIn = 0;
+}
+
 module.exports = {
     getAccessToken,
     refreshAccessToken,
-    provideAccessToken
+    provideAccessToken,
+    destroyTokens
 };

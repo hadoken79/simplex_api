@@ -38,7 +38,10 @@ const getProjectData = (projectId) => {
                     warnLog('Could not get Project-Data ' + err);
                 });
 
-        });
+        })
+        .catch(fail => {
+            return fail;
+        })
 }
 
 

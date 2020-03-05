@@ -73,7 +73,15 @@ const prepareDownload = (req, res) => {
                 info: 'Auszug der Projekte (Seite 1)',
                 projects: projects.totalElements
             });
-        });
+        })
+        .catch(fail => {
+            res.render('login', {
+                title: 'Simplex-Api',
+                heading: fail,
+                loginActive: false,
+                loginFailed: req.body.loginFailed
+            });
+        })
 
 }
 
