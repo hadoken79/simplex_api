@@ -5,7 +5,8 @@ const
     routing = require('./routes'),
     session = require('express-session'),
     path = require('path'),
-    webSocketServer = require('ws').Server;
+    webSocketServer = require('ws').Server,
+    helmet = require('helmet');
 
 
 require('dotenv').config();
@@ -13,7 +14,8 @@ require('dotenv').config();
 const port = process.env.PORT;
 const server = express();
 
-
+//Grundlegender http-Headerschutz
+server.use(helmet());
 
 //<--Beispiel einer Custom Middleware, die sich in den Request/Response Ablauf hängt.
 const loggerMiddleware = (req, res, next) => {
