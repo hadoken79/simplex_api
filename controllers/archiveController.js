@@ -63,7 +63,7 @@ const prepareDownload = (req, res) => {
             //User muss über Modal erst noch einige Angaben machen.
             res.render('archive', {
                 title: 'Simplex-Api',
-                heading: 'Projekte runterladen',
+                heading: 'Projekte lokal speichern',
                 modalHeading: 'Bitte überprüfen!',
                 archiveActive: true,
                 modal: true,

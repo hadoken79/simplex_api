@@ -323,7 +323,7 @@ const downloadVideo = (projectId, path, fileName, total) => {
 
             } catch (error) {
                 //console.log('PIPE error ' + error);
-                warnLog(`Fehler bei Verbindung mit API ${error}`);
+                warnLog(`Fehler bei Download-Video Methode ${error}`);
             }
 
         });
