@@ -316,12 +316,14 @@ const downloadVideo = (projectId, path, fileName, total) => {
                         if (countAllVideoDownloads === total) {
                             sendStatus.sendMsg(JSON.stringify({ type: 'dlend', detail: 'done' }));
                         }
-                    });
+                    })
+                    .on('error', (err) => {
+                        warnLog(`Fehler beim Speichern von ${projectId} | ${err}`);
+                    })
 
             } catch (error) {
                 //console.log('PIPE error ' + error);
-                warnLog(`Fehler bei Versuch Video für ${path} herunterzuladen`);
-                Promise.reject(`Fehler bei Versuch Video für ${path} herunterzuladen`);
+                warnLog(`Fehler bei Verbindung mit API ${error}`);
             }
 
         });
