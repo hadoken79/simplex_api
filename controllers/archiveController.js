@@ -27,7 +27,7 @@ const renderArchiveSearch = (req, res) => {
     }
     let pickerVal = maxDate.slice(0, -14);
 
-    console.log(maxDate);
+    //console.log(maxDate);
 
     simplexService.getAllProjects(maxDate, 200, 0)
         .then(projects => {

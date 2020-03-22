@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", event => {
         let channelOption = document.querySelector('#channelSelector');
         let sortOption = document.querySelector('#sortingSelector');
         let searchField = document.querySelector('#searchText');
+        
 
         let searchText = null;
         let channel = channelOption.value;
@@ -62,6 +63,7 @@ document.addEventListener("DOMContentLoaded", event => {
             searchText = searchField.value;
             getProjectsFromAllChannels(channel, new Date().toISOString(), 32, 0, sortOption.value, searchText);
         }
+
     }
 
     //Archive
@@ -203,8 +205,17 @@ const updateHomeGui = (projects, failhappend) => {
         let imgwrapper = document.createElement('figure');
         imgwrapper.classList.add('image', 'is-16by9');
         let img = document.createElement('img');
-        img.setAttribute('src', `https://media10.simplex.tv/content/4062/4063/${project.projectId}/simvid_1_med.jpg`); //Fehler bei fehlendem Bild noch abfangen
+        img.id = "thumbImg"; //wird für error handling benötigt
+        img.setAttribute('src', `https://media10.simplex.tv/content/4062/4063/${project.projectId}/simvid_1_med.jpg`);
         img.setAttribute('alt', `Projekt Thumbnail`);
+        //Falls Bildurl nicht gefunden wird
+        img.addEventListener('error', function handle(event) {
+            img.removeEventListener('error', handle);//um loop zu vermeiden, leider nicht mit arrowfunc möglich
+            img.setAttribute('src', `images/error.jpeg`);
+            img.setAttribute('alt', `Bild nicht gefunden`);   
+            //console.log("Gotya bitch! " + event);
+        });
+
         //Content-Container
         let content = document.createElement('div');
         content.classList.add('card-content');

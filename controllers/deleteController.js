@@ -25,7 +25,7 @@ const prepareDelete = (req, res) => {
     if (folder) {
         delEnable = true;
     }
-    console.log(req.body);
+    //console.log(req.body);
     console.log('Selected Folder ' + folder);
     storageService.getDeleteIds(folder)
         .then(ids => {
@@ -56,7 +56,7 @@ const prepareDelete = (req, res) => {
 const startDelete = (req, res) => {
 
     let folder = req.body.selectedFolder;
-    console.log(req.body);
+    //console.log(req.body);
 
     storageService.getDeleteIds(folder)
         .then(ids => {

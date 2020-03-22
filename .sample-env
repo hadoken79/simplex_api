@@ -1,9 +1,5 @@
-USERNAME=<username>
-PASSWORD=<password>
 API=<rootPath>
 PORT=<LocalServerPort>
 SESSION_SECRET=<saltForSessionHash>
-TOKEN=<getyourselfaToken>
-REFRESHTOKEN=<getyourselfaToken>
 AUTHORID=<yourauthorID>
 COSTOMERID=<yourCostomerID>
