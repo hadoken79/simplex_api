@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", event => {
     }
 
 
-
     //Home 
     if (document.getElementById('pag-wrapper')) {
 
@@ -154,8 +153,6 @@ const getProjectsFromAllChannels = (channel, maxCreationDate, size, page, sort, 
 const updateHomeGui = (projects, failhappend) => {
 
     //falls api nichts liefert
-
-
     if (failhappend) {
         showError();
         return;
@@ -170,8 +167,6 @@ const updateHomeGui = (projects, failhappend) => {
     let sortOption = document.querySelector('#sortingSelector');
     let searchField = document.querySelector('#searchText');
     let searchText = searchField.value;
-
-
 
     let wrapper = document.querySelector('.columns');
     let pagWrapper = document.querySelector('#pag-wrapper');
@@ -212,7 +207,7 @@ const updateHomeGui = (projects, failhappend) => {
         img.addEventListener('error', function handle(event) {
             img.removeEventListener('error', handle);//um loop zu vermeiden, leider nicht mit arrowfunc möglich
             img.setAttribute('src', `images/error.jpeg`);
-            img.setAttribute('alt', `Bild nicht gefunden`);   
+            img.setAttribute('alt', `Bild nicht gefunden`);
             //console.log("Gotya bitch! " + event);
         });
 
