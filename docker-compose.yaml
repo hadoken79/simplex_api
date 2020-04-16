@@ -10,6 +10,7 @@ services:
     volumes:
       - ./:/home/app
       - /media/hadoken/speicher:/home/app/storage
+      #windowsmount E:\\:/home/app/storage
     
     #stdin_open: true
     #tty: true
