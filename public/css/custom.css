@@ -28,10 +28,6 @@ main{
     margin-top: 5rem;
 }
 
-.notification.is-primary{
-    color:black;
-}
-
 .footer{
     max-height: 2rem;
     margin-top: auto;
