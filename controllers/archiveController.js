@@ -95,7 +95,6 @@ const startDownload = (req, res) => {
 
     simplexService.downloadAllData(maxDate, folder)
         .then(response => {
-
             //platzhalter
             res.render('archive', {
                 title: 'Simplex-Api',
@@ -103,7 +102,10 @@ const startDownload = (req, res) => {
                 info: 'Download begonnen',
                 archiveActive: true
             });
-        });
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        })
 }
 
 module.exports = {
