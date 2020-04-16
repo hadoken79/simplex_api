@@ -10,7 +10,8 @@ services:
     volumes:
       - ./:/home/app
       - /media/hadoken/speicher:/home/app/storage
-      #windowsmount E:\\:/home/app/storage
+      #windowsmount all other volumes need to be disabled
+      #- E:\\:/home/app/storage
     
     #stdin_open: true
     #tty: true
