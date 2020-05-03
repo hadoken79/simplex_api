@@ -6,7 +6,11 @@ const storageService = require('./storageService'),
     { infoLog, warnLog } = require('./loggerService'),
     sendStatus = require('../server'),
     progress = require('request-progress'),
+<<<<<<< HEAD
     sem = require('semaphore')(9);
+=======
+    sem = require('semaphore')(5);
+>>>>>>> c2deba039dffa4181f0c31a593bbddfc7ecbe5da
 
 require('dotenv').config();
 
@@ -174,8 +178,9 @@ const downloadAllData = async (maxDate, folder) => {
             let projects = await getAllProjects(maxDate, 200, i);
 
             for (let project of projects.content) {
-                //TODO Hier noch Speicherabfrage einfügen und skippen, falls vorhanden.
 
+                //To do Speicherabfrage einfügen
+                
                 //Hole eine Semaphore
                 sem.take(async () => {
                     //Vor dem Download muss noch der Channel abgefragt werden um die korrekte Ordnerstruktur erstellen zu können
