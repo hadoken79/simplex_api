@@ -1,4 +1,4 @@
-const request = require('request-promise');
+const prequest = require('request-promise');
 
 require('dotenv').config();
 
@@ -26,7 +26,7 @@ const getAccessToken = (username, password) => {
         json: true,
     };
 
-    return request
+    return prequest
         .post(options)
         .then((tokenResponse) => {
             console.log('got me a new token');
@@ -54,7 +54,7 @@ const refreshAccessToken = () => {
         json: true,
     };
 
-    return request.post(options).then((tokenResponse) => {
+    return prequest.post(options).then((tokenResponse) => {
         console.log('successfully refreshed Token');
         accessToken = tokenResponse.access_token;
         refreshToken = tokenResponse.refresh_token;

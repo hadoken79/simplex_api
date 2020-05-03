@@ -8,8 +8,8 @@ services:
       - 80:3000
       - 8080:8080
     volumes:
-      #- ./:/home/app
-      - /media/hadoken/WEBARCHIV:/home/app/storage
+      - ./:/home/app
+      - /media/hadoken/speicher:/home/app/storage
       #windowsmount all other volumes need to be disabled
       #- E:\\:/home/app/storage
     
