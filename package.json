@@ -26,12 +26,15 @@
     "fs": "0.0.1-security",
     "handlebars": "^4.7.6",
     "helmet": "^3.22.0",
-    "nodemon": "^2.0.2",
     "path": "^0.12.7",
     "request": "^2.88.2",
     "request-progress": "^3.0.0",
     "request-promise": "^4.2.5",
+    "semaphore": "^1.1.0",
     "simple-node-logger": "^18.12.24",
     "ws": "^7.2.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
   }
 }

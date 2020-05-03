@@ -1,3 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
-/*@import url('bulma.css');*/
+@import url('../../font-awesome/css/font-awesome.css');
+@import url('../../bulma/css/bulma.css');
+@import url('../../bulma-calendar/dist/css/bulma-calendar.min.css');
 @import url('custom.css');
