@@ -6,11 +6,7 @@ const storageService = require('./storageService'),
     { infoLog, warnLog } = require('./loggerService'),
     sendStatus = require('../server'),
     progress = require('request-progress'),
-<<<<<<< HEAD
-    sem = require('semaphore')(9);
-=======
     sem = require('semaphore')(5);
->>>>>>> c2deba039dffa4181f0c31a593bbddfc7ecbe5da
 
 require('dotenv').config();
 
@@ -163,6 +159,21 @@ const getAllProjects = (
     });
 };
 
+const downloadSingleProject = async (projectId, folder) => {
+
+    let workFolder = await storageService.createWorkFolder(folder);
+    let channel = await getProjectChannel(projectId);
+    let path = await storageService.createPath(
+        workFolder,
+        channel,
+        projectId
+    );
+    downloadThumbnail(projectId, path, 'simvid_1.jpg');
+    downloadJson(projectId, path);
+    downloadVideo(projectId, path, 'simvid_1.mp4', 1);
+    return Promise.resolve('download läuft....');
+}
+
 const downloadAllData = async (maxDate, folder) => {
     countAllVideoDownloads = 0;
     let p1 = getAllProjects(maxDate, 200, 0);
@@ -180,7 +191,7 @@ const downloadAllData = async (maxDate, folder) => {
             for (let project of projects.content) {
 
                 //To do Speicherabfrage einfügen
-                
+
                 //Hole eine Semaphore
                 sem.take(async () => {
                     //Vor dem Download muss noch der Channel abgefragt werden um die korrekte Ordnerstruktur erstellen zu können
@@ -225,7 +236,7 @@ const downloadAllData = async (maxDate, folder) => {
                     if (err)
                         warnLog(
                             'Fehler beim schreiben des Projektinventars im Workfolder ' +
-                                err
+                            err
                         );
                     //console.log('Projektinventar erstellt');
                 }
@@ -317,12 +328,13 @@ const downloadVideo = (projectId, path, fileName, total) => {
                                         break;
                                 }
                                 infoLog(
-                                    `Thumbnail ${fileName} nicht gefunden. Versuche ${altFileName}`
+                                    `Video ${fileName} nicht gefunden. Versuche ${altFileName}`
                                 );
-                                downloadThumbnail(
+                                downloadVideo(
                                     projectId,
                                     workFolder,
-                                    altFileName
+                                    altFileName,
+                                    total -= 1
                                 );
                             }
                         }),
@@ -554,6 +566,7 @@ module.exports = {
     getChannelProjects,
     getAllActiveChannels,
     getAllProjects,
+    downloadSingleProject,
     downloadAllData,
     getProjectData,
     updateProject,

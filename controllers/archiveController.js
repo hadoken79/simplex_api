@@ -51,11 +51,40 @@ const prepareDownload = (req, res) => {
     let pickerVal = 'Kein Datum gewählt.';
     let dlEnable = false;
     let folders = storageService.getFolders('storage');//muss über Docker, oder wenn nativ verwendet, über OS auf eine externe HDD gelinkt werden.
+    let singleProjectId = '';
 
     if (req.query.maxDate) {
         maxDate = req.query.maxDate + 'T12:00:00.000Z';
         pickerVal = maxDate.slice(0, -14);
         dlEnable = true;
+    }
+
+    if (req.query.singleProjectId) {
+        dlEnable = true;
+        singleProjectId = req.query.singleProjectId;
+        simplexService.getProjectData(singleProjectId)
+            .then(project => {
+                res.render('archive', {
+                    title: 'Simplex-Api',
+                    heading: 'Projekt lokal speichern',
+                    modalHeading: 'Bitte überprüfen!',
+                    archiveActive: true,
+                    modal: true,
+                    singleProjectId,
+                    folders,
+                    dlEnable,
+                    info: 'Auszug der Projekte (Seite 1)'
+                });
+            })
+            .catch(fail => {
+                res.render('login', {
+                    title: 'Simplex-Api',
+                    heading: fail,
+                    loginActive: false,
+                    loginFailed: req.body.loginFailed
+                });
+            })
+        return;
     }
 
     simplexService.getAllProjects(maxDate, 200, 0)
@@ -86,11 +115,30 @@ const prepareDownload = (req, res) => {
 }
 
 const startDownload = (req, res) => {
-
-    //console.log('Selected Folder = ' + req.query.folder);
-
     let folder = req.query.folder;
+    //console.log('Selected Folder = ' + req.query.folder);
+    console.log(req.query);
+    if (req.query.singleProjectId) {
+
+        simplexService.downloadSingleProject(req.query.singleProjectId, folder)
+            .then(response => {
+                //platzhalter
+                res.render('archive', {
+                    title: 'Simplex-Api',
+                    heading: 'Projekt runterladen',
+                    info: 'Download begonnen',
+                    archiveActive: true
+                });
+            })
+            .catch(err => {
+                res.status(500).send(err);
+            })
+        return;
+    }
+
+
     let maxDate = req.query.maxDate + 'T12:00:00.000Z';
+
 
 
     simplexService.downloadAllData(maxDate, folder)

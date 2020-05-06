@@ -6,7 +6,8 @@ const getValRules = (req, res, next) => {
     return [
         query('do').isLength({ max: 20 }).escape(),
         query('maxDate').isLength({ max: 20 }).escape(),
-        query('page').isLength({ max: 20 }).escape()
+        query('page').isLength({ max: 20 }).escape(),
+        query('singleProjectId').isLength({ max: 20 }).escape(),
     ]
 }
 
@@ -16,11 +17,11 @@ const postValRules = (req, res, next) => {
         body('username').isLength({ max: 20 }).escape(),
         body('password').isLength({ max: 20 }).trim(),
         body('do').isLength({ max: 20 }).escape(),
-        body('size').isLength({max: 5}).escape().trim(),
-        body('sort').isLength({max: 4}).escape().trim(),
-        body('text').isLength({max: 100}).escape().trim(),
-        body('page').isLength({max: 5}).escape().trim(),
-        body('channel').isLength({max: 10}).escape().trim(),
+        body('size').isLength({ max: 5 }).escape().trim(),
+        body('sort').isLength({ max: 4 }).escape().trim(),
+        body('text').isLength({ max: 100 }).escape().trim(),
+        body('page').isLength({ max: 5 }).escape().trim(),
+        body('channel').isLength({ max: 10 }).escape().trim(),
         body('ns_st_ci').isLength({ max: 20 }).escape().trim(),
         body('ns_st_cl').isLength({ max: 20 }).escape().trim(),
         body('ns_st_ct').isLength({ max: 20 }).escape().trim(),
@@ -34,8 +35,8 @@ const postValRules = (req, res, next) => {
         body('ns_st_pr').isLength({ max: 20 }).escape().trim(),
         body('ns_st_sn').isLength({ max: 20 }).escape().trim(),
         body('ns_st_ep').isLength({ max: 1024 }).escape().trim(),
-        body('title').isLength({max: 255}).escape().trim(),
-        body('description').isLength({max: 1024}).escape().trim()
+        body('title').isLength({ max: 255 }).escape().trim(),
+        body('description').isLength({ max: 1024 }).escape().trim()
     ]
 }
 

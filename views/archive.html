@@ -14,6 +14,10 @@
                     <input type="date" class="is-inline" name="maxDate" value={{pickerVal}}>
                 </div>
                 <div class="selectionItem">
+                    <input type="text" class="is-inline input control" name="singleProjectId"
+                        placeholder="Einzel-Projekt-ID" value={{singleProjectId}}>
+                </div>
+                <div class="selectionItem">
                     <input type="Submit" id='showProjects' class="button is-primary" name="do" value="Show"></button>
                     <input type="Submit" class="button is-danger" name="do" value="Download"></button>
                 </div>
@@ -28,9 +32,15 @@
                         </header>
                         <section class="modal-card-body">
                             {{#if dlEnable}}
+                            {{#if pickerVal}}
                             Möchtest Du alle Projekte mit Erstellungsdatum älter als <strong>{{pickerVal}}</strong>
                             herunterladen?
                             <br><strong>{{projects}}</strong> Elemente.<br>
+                            {{/if}}
+                            {{#if singleProjectId}}
+                            Möchtest Du das Projekt <strong>{{singleProjectId}}</strong>
+                            herunterladen?
+                            {{/if}}
                             <b>Wähle einen Ordner und klicke Start..</b>
                             <br>
                             <div class="select">
