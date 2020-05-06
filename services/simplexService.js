@@ -478,84 +478,90 @@ const deleteAllProjets = (ids) => {
         for (let i = 0; i < ids.length; i++) {
             //console.log('lösche ' + ids[i]);
 
-            tokenService.provideAccessToken().then((accessToken) => {
-                //prüfen ob auf S3
-                let options = {
-                    uri: `https://telebasel-archiv.s3.eu-central-1.amazonaws.com/${ids[i]}//${ids[i]}.json`,
-                    headers: {
-                        Accept: 'application/json',
-                    },
-                    json: true,
-                };
-                pRequest
-                    .get(options)
-                    .then((response) => {
-                        //console.log(response);
-                        if (response.statusCode === 200) {
-                            //Simulation um Ablauf zu testen.=================/
-                            setTimeout(() => {
-                                sendStatus.sendMsg(
-                                    JSON.stringify({
-                                        type: 'delstat',
-                                        project: ids[i],
-                                        msg: ' gelöscht',
-                                    })
-                                );
-                                countAllVideoDeletions += 1;
-
-                                //Prüfen ob alle durch sind
-                                if (countAllVideoDeletions === ids.length - 1) {
+            sem.take(async () => {
+                tokenService.provideAccessToken().then((accessToken) => {
+                    //prüfen ob auf S3
+                    let options = {
+                        uri: `https://telebasel-archiv.s3.eu-central-1.amazonaws.com/${ids[i]}//${ids[i]}.json`,
+                        headers: {
+                            Accept: 'application/json',
+                        },
+                        json: true,
+                    };
+                    pRequest
+                        .get(options)
+                        .then((response) => {
+                            //console.log(response);
+                            if (response.statusCode === 200) {
+                                //Simulation um Ablauf zu testen.=================/
+                                /*
+                                setTimeout(() => {
                                     sendStatus.sendMsg(
                                         JSON.stringify({
-                                            type: 'delend',
-                                            detail: 'done',
+                                            type: 'delstat',
+                                            project: ids[i],
+                                            msg: ' gelöscht',
                                         })
                                     );
-                                }
-                            }, 1000);
-                            //=================================================/
-                            /*
-                   //Löschen 
-                   let options = {
-                       uri: `${api}/api/v1/projects/${ids[i]}`,
-                       headers: {
-                           Authorization: `Bearer ${accessToken}`,
-                           Accept: "application/json"
-                       },
-                       json: true
-                   };
-                     pRequest
-                          .delete(options)
-                          .then(response => {
-                              //console.log(response);
-                              console.log('Lösche Project' + ids[i] + '==================================================================================> END OF CALL');
-                              sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: response }));
-                                countAllVideoDeletions += 1;
-                       //Prüfen ob alle durch sind
-                       if (countAllVideoDeletions === ids.lenght -1) {
-                           sendStatus.sendMsg(JSON.stringify({ type: 'delend', detail: 'done' }));
-                       }
-                          })
-                          .catch(err => {
-                              warnLog('Fehler bei deleteProjects ' + err);
-                              sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: err }));
-                          }) */
-                        }
-                    })
-                    .catch((err) => {
-                        sendStatus.sendMsg(
-                            JSON.stringify({
-                                type: 'delstat',
-                                project: ids[i],
-                                msg:
-                                    'Nicht auf S3 vorhanden, wird nicht gelöscht',
-                            })
-                        );
-                        warnLog('Fehler bei Amazon Check ' + err);
-                        warnLog(
-                            `${ids[i]} wurde nicht auf S3 gefunden und darum nicht gelöscht.`
-                        );
-                    });
+                                    countAllVideoDeletions += 1;
+    
+                                    //Prüfen ob alle durch sind
+                                    if (countAllVideoDeletions === ids.length - 1) {
+                                        sendStatus.sendMsg(
+                                            JSON.stringify({
+                                                type: 'delend',
+                                                detail: 'done',
+                                            })
+                                        );
+                                    }
+                                }, 1000);
+                                //=================================================/
+                                */
+                                //Löschen 
+                                let options = {
+                                    uri: `${api}/api/v1/projects/${ids[i]}`,
+                                    headers: {
+                                        Authorization: `Bearer ${accessToken}`,
+                                        Accept: "application/json"
+                                    },
+                                    json: true
+                                };
+                                pRequest
+                                    .delete(options)
+                                    .then(response => {
+                                        sem.leave();
+                                        //console.log(response);
+                                        console.log('Lösche Project' + ids[i] + '==================================================================================> END OF CALL');
+                                        sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: response }));
+                                        countAllVideoDeletions += 1;
+                                        //Prüfen ob alle durch sind
+                                        if (countAllVideoDeletions === ids.lenght - 1) {
+                                            sendStatus.sendMsg(JSON.stringify({ type: 'delend', detail: 'done' }));
+                                        }
+                                    })
+                                    .catch(err => {
+                                        sem.leave();
+                                        warnLog('Fehler bei deleteProjects ' + err);
+                                        sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: err }));
+                                    })
+                            }
+                        })
+                        .catch((err) => {
+                            sem.leave();
+                            sendStatus.sendMsg(
+                                JSON.stringify({
+                                    type: 'delstat',
+                                    project: ids[i],
+                                    msg:
+                                        'Nicht auf S3 vorhanden, wird nicht gelöscht',
+                                })
+                            );
+                            warnLog('Fehler bei Amazon Check ' + err);
+                            warnLog(
+                                `${ids[i]} wurde nicht auf S3 gefunden und darum nicht gelöscht.`
+                            );
+                        });
+                });
             });
         }
     })();
