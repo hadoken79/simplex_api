@@ -9,7 +9,9 @@ services:
       - 8080:8080
     volumes:
       - ./:/home/app
+      #- /media/linus/WEBARCHIV:/home/app/storage
       #- /media/hadoken/speicher:/home/app/storage
+      #- /media/linus/70DE-6DBF:/home/app/storage
       # windowsmount all other volumes need to be disabled
       #- E:\\:/home/app/storage
     

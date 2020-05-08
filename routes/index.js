@@ -7,8 +7,8 @@ const
     clientController = require('../controllers/clientController'),
     detailsController = require('../controllers/detailsController'),
     deleteController = require('../controllers/deleteController'),
-    {postValRules, getValRules, validate} = require('../middleware/validator');
-    //{check, body, query, validationResult} = require('express-validator');
+    { postValRules, getValRules, validate } = require('../middleware/validator');
+//{check, body, query, validationResult} = require('express-validator');
 
 router.get('/home', getValRules(), validate, authMiddleware, homeController.renderHome);
 router.get('/', getValRules(), validate, authMiddleware, homeController.renderHome);
@@ -17,7 +17,7 @@ router.post('/details', postValRules(), validate, authMiddleware, detailsControl
 
 router.get('/archive', authMiddleware, getValRules(), validate, (req, res) => {
 
-  
+
     switch (req.query.do) {
         case 'Show':
             console.log('Case Anzeigen');
@@ -41,15 +41,15 @@ router.get('/archive', authMiddleware, getValRules(), validate, (req, res) => {
 
 router.get('/delete', getValRules(), validate, authMiddleware, deleteController.renderDelete);
 router.post('/delete', postValRules(), validate, authMiddleware, (req, res) => {
-    
+
     switch (req.body.do) {
 
         case 'Delete':
-            console.log('Case Herunterladen');
+            console.log('Case prepare delete');
             deleteController.prepareDelete(req, res);
             break;
         case 'Start':
-            console.log('Case beginn');
+            console.log('Case beginn delete');
             deleteController.startDelete(req, res);
             break;
         default:

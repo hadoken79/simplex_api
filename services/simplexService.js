@@ -6,7 +6,8 @@ const storageService = require('./storageService'),
     { infoLog, warnLog } = require('./loggerService'),
     sendStatus = require('../server'),
     progress = require('request-progress'),
-    sem = require('semaphore')(5);
+    sem = require('semaphore')(10),
+    async = require('async');
 
 require('dotenv').config();
 
@@ -174,7 +175,7 @@ const downloadSingleProject = async (projectId, folder) => {
     return Promise.resolve('download läuft....');
 }
 
-const downloadAllData = async (maxDate, folder) => {
+const downloadAllDataOld = async (maxDate, folder) => {
     countAllVideoDownloads = 0;
     let p1 = getAllProjects(maxDate, 200, 0);
     let p2 = storageService.createWorkFolder(folder);
@@ -186,11 +187,13 @@ const downloadAllData = async (maxDate, folder) => {
 
     (async () => {
         for (let i = 0; i < pages; i++) {
+
             let projects = await getAllProjects(maxDate, 200, i);
 
             for (let project of projects.content) {
 
                 //To do Speicherabfrage einfügen
+
 
                 //Hole eine Semaphore
                 sem.take(async () => {
@@ -472,101 +475,196 @@ const updateProject = (projectId, data) => {
 };
 
 const deleteAllProjets = (ids) => {
-    let countAllVideoDeletions = 0;
+    return new Promise((resolve) => {
+        let countAllVideoDeletions = 0;
 
-    (async () => {
-        for (let i = 0; i < ids.length; i++) {
-            //console.log('lösche ' + ids[i]);
+        resolve("löschen gestartet....");
 
-            sem.take(async () => {
-                tokenService.provideAccessToken().then((accessToken) => {
-                    //prüfen ob auf S3
-                    let options = {
-                        uri: `https://telebasel-archiv.s3.eu-central-1.amazonaws.com/${ids[i]}//${ids[i]}.json`,
-                        headers: {
-                            Accept: 'application/json',
-                        },
-                        json: true,
-                    };
-                    pRequest
-                        .get(options)
-                        .then((response) => {
-                            //console.log(response);
-                            if (response.statusCode === 200) {
-                                //Simulation um Ablauf zu testen.=================/
-                                /*
-                                setTimeout(() => {
+
+        async.eachLimit(ids, 10, (id, callback) => {
+            console.log('lösche ' + id);
+
+            tokenService.provideAccessToken().then((accessToken) => {
+                //prüfen ob auf S3
+                let options = {
+                    uri: `https://telebasel-archiv.s3.eu-central-1.amazonaws.com/${id}/${id}.json`,
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                    json: true,
+                    resolveWithFullResponse: true
+                };
+                pRequest
+                    .get(options)
+                    .then((response) => {
+                        console.log("AMAZON:  " + response.statusCode);
+                        if (response.statusCode === 200) {
+                            console.log(`${id} FOUND THAT BITCH ON AMAZON`);
+                            //Simulation um Ablauf zu testen.=================/
+                            /*
+                            setTimeout(() => {
+                               
+                                sendStatus.sendMsg(
+                                    JSON.stringify({
+                                        type: 'delstat',
+                                        project: id,
+                                        msg: ' gelöscht',
+                                    })
+                                );
+                              
+                                countAllVideoDeletions += 1;
+      
+                                //Prüfen ob alle durch sind
+                                if (countAllVideoDeletions === ids.length - 1) {
                                     sendStatus.sendMsg(
                                         JSON.stringify({
-                                            type: 'delstat',
-                                            project: ids[i],
-                                            msg: ' gelöscht',
+                                            type: 'delend',
+                                            detail: 'done',
                                         })
                                     );
+                                }
+                                
+                            }, 1000);
+                            */
+                            //=================================================/
+
+                            //Löschen 
+                            let options = {
+                                uri: `${api}/api/v1/projects/${id}`,
+                                headers: {
+                                    Authorization: `Bearer ${accessToken}`,
+                                    Accept: "application/json"
+                                },
+                                json: true,
+                                resolveWithFullResponse: true
+                            };
+                            pRequest
+                                .delete(options)
+                                .then(response => {
                                     countAllVideoDeletions += 1;
-    
-                                    //Prüfen ob alle durch sind
-                                    if (countAllVideoDeletions === ids.length - 1) {
-                                        sendStatus.sendMsg(
-                                            JSON.stringify({
-                                                type: 'delend',
-                                                detail: 'done',
-                                            })
-                                        );
+
+                                    if (response.statusCode == '202') {
+                                        sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: id, msg: 'Projekt gelöscht' }));
                                     }
-                                }, 1000);
-                                //=================================================/
-                                */
-                                //Löschen 
-                                let options = {
-                                    uri: `${api}/api/v1/projects/${ids[i]}`,
-                                    headers: {
-                                        Authorization: `Bearer ${accessToken}`,
-                                        Accept: "application/json"
-                                    },
-                                    json: true
-                                };
-                                pRequest
-                                    .delete(options)
-                                    .then(response => {
-                                        sem.leave();
-                                        //console.log(response);
-                                        console.log('Lösche Project' + ids[i] + '==================================================================================> END OF CALL');
-                                        sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: response }));
-                                        countAllVideoDeletions += 1;
-                                        //Prüfen ob alle durch sind
-                                        if (countAllVideoDeletions === ids.lenght - 1) {
-                                            sendStatus.sendMsg(JSON.stringify({ type: 'delend', detail: 'done' }));
+                                    callback();
+                                })
+                                .catch(err => {
+                                    warnLog('Fehler bei deleteProjects ' + err.statusCode);
+                                    if (err.statusCode == '403') {
+                                        sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: id, msg: 'Projekt nicht auf Simplex' }));
+                                    }
+                                    callback();
+                                })
+                        }
+                    })
+                    .catch((err) => {
+
+                        sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: id, msg: 'Nicht auf S3 vorhanden, wird nicht gelöscht' }));
+                        warnLog('Fehler bei Amazon Check ' + err);
+                        warnLog(`${id} wurde nicht auf S3 gefunden und darum nicht gelöscht.`);
+                        callback();
+                    });
+            });
+
+
+        }, (err) => {
+            if (err) {
+                console.log("Fehler in eachLimit in DeletePR: ", err);
+                warnLog('Fehler in LimitEach Löschschlaufe');
+            } else {
+                //Prüfen ob alle erfolgreich
+                if (countAllVideoDeletions === ids.lenght - 1) {
+                    sendStatus.sendMsg(JSON.stringify({ type: 'delend', detail: 'done' }));
+                }
+                console.log(`Report: ${countAllVideoDeletions} gelöscht. insgesammt ${ids.length - 1}`);
+            }
+        });
+
+    })
+
+};
+
+const downloadAllData = async (maxDate, folder) => {
+
+    return new Promise(async (resolve) => {
+        resolve("Download läuft");
+        countAllVideoDownloads = 0;
+        let workFolderInventory = [];
+        let p1 = getAllProjects(maxDate, 200, 0);
+        let p2 = storageService.createWorkFolder(folder);
+        const [totalProjects, workFolder] = await Promise.all([p1, p2]);
+        let pages = totalProjects.totalPages;
+        let totalProjectIds = totalProjects.totalElements;
+
+        const goOn = async () => {
+            fs.writeFile(
+                `storage/${workFolder}/Projects.del`,
+                JSON.stringify(workFolderInventory),
+                (err) => {
+                    if (err)
+                        warnLog(
+                            'Fehler beim schreiben des Projektinventars im Workfolder ' +
+                            err
+                        );
+                    console.log('Projektinventar erstellt');
+                }
+            );
+
+            async.eachLimit(workFolderInventory, 10, (projectId, done) => {
+
+
+                getProjectChannel(projectId)
+                    .then(channel => {
+                        storageService.createPath(workFolder, channel, projectId)
+                            .then(path => {
+
+                                storageService.checkIfFileOnDisk(`${path}/${projectId}.json`)
+                                    .then(exists => {
+
+                                        if (!exists) {
+                                            //await Promise.all([downloadThumbnail(projectId, path, 'simvid_1.jpg'), downloadVideo(projectId, path, 'simvid_1.mp4', totalProjectIds), downloadJson(projectId, path)]);
+                                            downloadJson(projectId, path);
+                                            downloadThumbnail(projectId, path, 'simvid_1.jpg');
+                                            downloadVideo(projectId, path, 'simvid_1.mp4', totalProjectIds)
+                                                .then(() => {
+                                                    done();
+                                                })
+                                        } else {
+                                            console.log("File already on Disk");
+                                            done();
                                         }
                                     })
-                                    .catch(err => {
-                                        sem.leave();
-                                        warnLog('Fehler bei deleteProjects ' + err);
-                                        sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: ids[i], msg: err }));
-                                    })
-                            }
-                        })
-                        .catch((err) => {
-                            sem.leave();
-                            sendStatus.sendMsg(
-                                JSON.stringify({
-                                    type: 'delstat',
-                                    project: ids[i],
-                                    msg:
-                                        'Nicht auf S3 vorhanden, wird nicht gelöscht',
-                                })
-                            );
-                            warnLog('Fehler bei Amazon Check ' + err);
-                            warnLog(
-                                `${ids[i]} wurde nicht auf S3 gefunden und darum nicht gelöscht.`
-                            );
-                        });
-                });
-            });
+                            })
+                    })
+
+            }, (err) => {
+                if (err) {
+                    console.log("Fehler in eachLimit in DownloadAllProjects: ", err);
+                    warnLog('Fehler in LimitEach Downloadschlaufe');
+                } else {
+                    console.log(`Report: ${countAllVideoDownloads} heruntergeladen. insgesammt ${workFolderInventory.length}`);
+                }
+
+            })
+
         }
-    })();
-    return Promise.resolve('Löschvorgang läuft....');
-};
+
+        for (let i = 0; i < pages; i++) {
+
+            let projects = await getAllProjects(maxDate, 200, i);
+            await Promise.all(projects.content.map(project => workFolderInventory.push(project.projectId)));
+
+            if (workFolderInventory.length === totalProjectIds) {
+                goOn();
+            }
+        }
+
+
+
+    })
+
+}
+
 
 module.exports = {
     getChannelProjects,

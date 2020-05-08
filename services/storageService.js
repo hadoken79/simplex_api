@@ -14,8 +14,21 @@ const getDeleteIds = (folder) => {
         fs.readFile(`storage/${folder}/Projects.del`, 'utf8', (err, data) => {
             if (err) {
                 reject(err);
+
             }
             resolve(JSON.parse(data));
+        })
+    })
+
+}
+
+const checkIfFileOnDisk = path => {
+    return new Promise((resolve) => {
+
+        fs.access(path, fs.constants.R_OK, (err) => {
+
+            resolve(err ? false : true);
+
         })
     })
 
@@ -62,7 +75,8 @@ module.exports = {
     getFolders,
     createPath,
     createWorkFolder,
-    getDeleteIds
+    getDeleteIds,
+    checkIfFileOnDisk
 }
 
 

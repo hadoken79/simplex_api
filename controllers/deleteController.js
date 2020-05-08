@@ -66,8 +66,9 @@ const startDelete = (req, res) => {
                     res.render('delete', {
                         title: 'Simplex-Api',
                         heading: 'Projekte löschen',
-                        info: 'Löschen begonnen',
-                        deleteActive: true
+                        info: response,
+                        deleteActive: true,
+                        modal: false,
                     });
                 })
                 .catch(fail => {

@@ -1,6 +1,2 @@
-2020-05-06 10:11:09.266 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusDescription":"Bad Request","statusCode":400,"errorMessage":"Unable to parse incoming date: T12:00:00.000Z"} 
-2020-05-06 10:30:59.999 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusDescription":"Bad Request","statusCode":400,"errorMessage":"Unable to parse incoming date: T12:00:00.000Z"} 
-2020-05-06 10:37:11.415 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusDescription":"Bad Request","statusCode":400,"errorMessage":"Unable to parse incoming date: T12:00:00.000Z"} 
-2020-05-06 10:39:45.840 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusDescription":"Bad Request","statusCode":400,"errorMessage":"Unable to parse incoming date: T12:00:00.000Z"} 
-2020-05-06 10:43:01.301 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusDescription":"Bad Request","statusCode":400,"errorMessage":"Unable to parse incoming date: T12:00:00.000Z"} 
-2020-05-06 10:44:47.653 WARN  Fehler bei getAllProjects StatusCodeError: 400 - {"statusDescription":"Bad Request","statusCode":400,"errorMessage":"Unable to parse incoming date: T12:00:00.000Z"} 
+2020-05-08 13:09:21.107 WARN  Fehler beim schreiben des Projektinventars im Workfolder Error: ENOENT: no such file or directory, open 'storage/1/Projects.del' 
+2020-05-08 13:12:19.260 WARN  Fehler beim schreiben des Projektinventars im Workfolder Error: ENOENT: no such file or directory, open 'storage/1/Projects.del' 
