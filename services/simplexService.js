@@ -475,7 +475,7 @@ const updateProject = (projectId, data) => {
 };
 
 const deleteAllProjets = (ids) => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         let countAllVideoDeletions = 0;
 
         resolve("löschen gestartet....");
@@ -484,51 +484,52 @@ const deleteAllProjets = (ids) => {
         async.eachLimit(ids, 10, (id, callback) => {
             console.log('lösche ' + id);
 
-            tokenService.provideAccessToken().then((accessToken) => {
-                //prüfen ob auf S3
-                let options = {
-                    uri: `https://telebasel-archiv.s3.eu-central-1.amazonaws.com/${id}/${id}.json`,
-                    headers: {
-                        Accept: 'application/json',
-                    },
-                    json: true,
-                    resolveWithFullResponse: true
-                };
-                pRequest
-                    .get(options)
-                    .then((response) => {
-                        console.log("AMAZON:  " + response.statusCode);
-                        if (response.statusCode === 200) {
-                            console.log(`${id} FOUND THAT BITCH ON AMAZON`);
-                            //Simulation um Ablauf zu testen.=================/
-                            /*
-                            setTimeout(() => {
-                               
+
+            //prüfen ob auf S3
+            let options = {
+                uri: `https://telebasel-archiv.s3.eu-central-1.amazonaws.com/${id}/${id}.json`,
+                headers: {
+                    Accept: 'application/json',
+                },
+                json: true,
+                resolveWithFullResponse: true
+            };
+            pRequest
+                .get(options)
+                .then((response) => {
+                    console.log("AMAZON:  " + response.statusCode);
+                    if (response.statusCode === 200) {
+                        console.log(`${id} FOUND ON AMAZON`);
+                        //Simulation um Ablauf zu testen.=================/
+                        /*
+                        setTimeout(() => {
+                           
+                            sendStatus.sendMsg(
+                                JSON.stringify({
+                                    type: 'delstat',
+                                    project: id,
+                                    msg: ' gelöscht',
+                                })
+                            );
+                          
+                            countAllVideoDeletions += 1;
+             
+                            //Prüfen ob alle durch sind
+                            if (countAllVideoDeletions === ids.length - 1) {
                                 sendStatus.sendMsg(
                                     JSON.stringify({
-                                        type: 'delstat',
-                                        project: id,
-                                        msg: ' gelöscht',
+                                        type: 'delend',
+                                        detail: 'done',
                                     })
                                 );
-                              
-                                countAllVideoDeletions += 1;
-      
-                                //Prüfen ob alle durch sind
-                                if (countAllVideoDeletions === ids.length - 1) {
-                                    sendStatus.sendMsg(
-                                        JSON.stringify({
-                                            type: 'delend',
-                                            detail: 'done',
-                                        })
-                                    );
-                                }
-                                
-                            }, 1000);
-                            */
-                            //=================================================/
+                            }
+                            
+                        }, 1000);
+                        */
+                        //=================================================/
 
-                            //Löschen 
+                        //Löschen 
+                        tokenService.provideAccessToken().then((accessToken) => {
                             let options = {
                                 uri: `${api}/api/v1/projects/${id}`,
                                 headers: {
@@ -554,17 +555,22 @@ const deleteAllProjets = (ids) => {
                                         sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: id, msg: 'Projekt nicht auf Simplex' }));
                                     }
                                     callback();
-                                })
-                        }
-                    })
-                    .catch((err) => {
+                                });
+                        }).catch((err) => {
+                            warnLog(`Fehler bei Delete-Video Methode (Token) ${err}`);
+                            resolve();
+                        });
+                    }
 
-                        sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: id, msg: 'Nicht auf S3 vorhanden, wird nicht gelöscht' }));
-                        warnLog('Fehler bei Amazon Check ' + err);
-                        warnLog(`${id} wurde nicht auf S3 gefunden und darum nicht gelöscht.`);
-                        callback();
-                    });
-            });
+                })
+                .catch((err) => {
+
+                    sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: id, msg: 'Nicht auf S3 vorhanden, wird nicht gelöscht' }));
+                    warnLog('Fehler bei Amazon Check ' + err);
+                    warnLog(`${id} wurde nicht auf S3 gefunden und darum nicht gelöscht.`);
+                    callback();
+                });
+
 
 
         }, (err) => {
@@ -609,44 +615,43 @@ const downloadAllData = async (maxDate, folder) => {
                     console.log('Projektinventar erstellt');
                 }
             );
+            /*
+        async.eachLimit(workFolderInventory, 10, (projectId, done) => {
 
-            async.eachLimit(workFolderInventory, 10, (projectId, done) => {
+            getProjectChannel(projectId)
+                .then(channel => {
+                    storageService.createPath(workFolder, channel, projectId)
+                        .then(path => {
 
+                            storageService.checkIfFileOnDisk(`${path}/${projectId}.json`)
+                                .then(exists => {
 
-                getProjectChannel(projectId)
-                    .then(channel => {
-                        storageService.createPath(workFolder, channel, projectId)
-                            .then(path => {
+                                    if (!exists) {
+                                        //await Promise.all([downloadThumbnail(projectId, path, 'simvid_1.jpg'), downloadVideo(projectId, path, 'simvid_1.mp4', totalProjectIds), downloadJson(projectId, path)]);
+                                        downloadJson(projectId, path);
+                                        downloadThumbnail(projectId, path, 'simvid_1.jpg');
+                                        downloadVideo(projectId, path, 'simvid_1.mp4', totalProjectIds)
+                                            .then(() => {
+                                                done();
+                                            })
+                                    } else {
+                                        console.log("File already on Disk");
+                                        done();
+                                    }
+                                })
+                        })
+                })
 
-                                storageService.checkIfFileOnDisk(`${path}/${projectId}.json`)
-                                    .then(exists => {
+        }, (err) => {
+            if (err) {
+                console.log("Fehler in eachLimit in DownloadAllProjects: ", err);
+                warnLog('Fehler in LimitEach Downloadschlaufe');
+            } else {
+                console.log(`Report: ${countAllVideoDownloads} heruntergeladen. insgesammt ${workFolderInventory.length}`);
+            }
 
-                                        if (!exists) {
-                                            //await Promise.all([downloadThumbnail(projectId, path, 'simvid_1.jpg'), downloadVideo(projectId, path, 'simvid_1.mp4', totalProjectIds), downloadJson(projectId, path)]);
-                                            downloadJson(projectId, path);
-                                            downloadThumbnail(projectId, path, 'simvid_1.jpg');
-                                            downloadVideo(projectId, path, 'simvid_1.mp4', totalProjectIds)
-                                                .then(() => {
-                                                    done();
-                                                })
-                                        } else {
-                                            console.log("File already on Disk");
-                                            done();
-                                        }
-                                    })
-                            })
-                    })
-
-            }, (err) => {
-                if (err) {
-                    console.log("Fehler in eachLimit in DownloadAllProjects: ", err);
-                    warnLog('Fehler in LimitEach Downloadschlaufe');
-                } else {
-                    console.log(`Report: ${countAllVideoDownloads} heruntergeladen. insgesammt ${workFolderInventory.length}`);
-                }
-
-            })
-
+        })
+*/
         }
 
         for (let i = 0; i < pages; i++) {
@@ -658,8 +663,6 @@ const downloadAllData = async (maxDate, folder) => {
                 goOn();
             }
         }
-
-
 
     })
 

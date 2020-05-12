@@ -48,7 +48,11 @@ const createWorkFolder = folder => {
             } else {
                 folder = '1';
             }
-
+            fs.mkdir(`storage/${folder}`, { recursive: true }, (err) => {
+                if (err) {
+                    reject(err);
+                }
+            });
         }
         resolve(folder);
     });
