@@ -116,7 +116,7 @@ const getProjectChannel = (projectId) => {
                 return response[0].id;
             })
             .catch((err) => {
-                warnLog(`Fehler bei getProjectChannel Pid ${projectId}  err`);
+                warnLog(`Fehler bei getProjectChannel Pid ${projectId}  ${err}`);
                 return err;
             });
     });
@@ -484,92 +484,80 @@ const deleteAllProjets = (ids) => {
         async.eachLimit(ids, 10, (id, callback) => {
             console.log('lösche ' + id);
 
-
-            //prüfen ob auf S3
-            let options = {
-                uri: `https://telebasel-archiv.s3.eu-central-1.amazonaws.com/${id}/${id}.json`,
-                headers: {
-                    Accept: 'application/json',
-                },
-                json: true,
-                resolveWithFullResponse: true
-            };
-            pRequest
-                .get(options)
-                .then((response) => {
-                    console.log("AMAZON:  " + response.statusCode);
-                    if (response.statusCode === 200) {
-                        console.log(`${id} FOUND ON AMAZON`);
-                        //Simulation um Ablauf zu testen.=================/
-                        /*
-                        setTimeout(() => {
-                           
-                            sendStatus.sendMsg(
-                                JSON.stringify({
-                                    type: 'delstat',
-                                    project: id,
-                                    msg: ' gelöscht',
-                                })
-                            );
-                          
-                            countAllVideoDeletions += 1;
-             
-                            //Prüfen ob alle durch sind
-                            if (countAllVideoDeletions === ids.length - 1) {
-                                sendStatus.sendMsg(
-                                    JSON.stringify({
-                                        type: 'delend',
-                                        detail: 'done',
-                                    })
-                                );
-                            }
-                            
-                        }, 1000);
-                        */
-                        //=================================================/
-
-                        //Löschen 
-                        tokenService.provideAccessToken().then((accessToken) => {
-                            let options = {
-                                uri: `${api}/api/v1/projects/${id}`,
-                                headers: {
-                                    Authorization: `Bearer ${accessToken}`,
-                                    Accept: "application/json"
-                                },
-                                json: true,
-                                resolveWithFullResponse: true
-                            };
-                            pRequest
-                                .delete(options)
-                                .then(response => {
-                                    countAllVideoDeletions += 1;
-
-                                    if (response.statusCode == '202') {
-                                        sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: id, msg: 'Projekt gelöscht' }));
-                                    }
-                                    callback();
-                                })
-                                .catch(err => {
-                                    warnLog('Fehler bei deleteProjects ' + err.statusCode);
-                                    if (err.statusCode == '403') {
-                                        sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: id, msg: 'Projekt nicht auf Simplex' }));
-                                    }
-                                    callback();
-                                });
-                        }).catch((err) => {
-                            warnLog(`Fehler bei Delete-Video Methode (Token) ${err}`);
-                            resolve();
-                        });
+            getProjectChannel(id)
+                .then(channel => {
+                    if (channel === 0) {
+                        deleteOnSimplex();
+                    } else {
+                        checkAws()
+                            .then(() => deleteOnSimplex());
                     }
-
                 })
-                .catch((err) => {
+                .catch(() => { callback(); })
 
-                    sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: id, msg: 'Nicht auf S3 vorhanden, wird nicht gelöscht' }));
-                    warnLog('Fehler bei Amazon Check ' + err);
-                    warnLog(`${id} wurde nicht auf S3 gefunden und darum nicht gelöscht.`);
-                    callback();
+            const checkAws = () => {
+                //prüfen ob auf S3
+                let options = {
+                    uri: `https://telebasel-archiv.s3.eu-central-1.amazonaws.com/${id}/${id}.json`,
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                    json: true,
+                    resolveWithFullResponse: true
+                };
+                pRequest
+                    .get(options)
+                    .then((response) => {
+                        console.log("AMAZON:  " + response.statusCode);
+                        if (response.statusCode === 200) {
+                            console.log(`${id} FOUND ON AMAZON`);
+                            return true;
+                        }
+
+                    })
+                    .catch((err) => {
+
+                        sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: id, msg: 'Nicht auf S3 vorhanden, wird nicht gelöscht' }));
+                        warnLog('Fehler bei Amazon Check ' + err);
+                        warnLog(`${id} wurde nicht auf S3 gefunden und darum nicht gelöscht.`);
+                        callback();
+                    });
+            }
+
+            const deleteOnSimplex = () => {
+                //Löschen 
+                tokenService.provideAccessToken().then((accessToken) => {
+                    let options = {
+                        uri: `${api}/api/v1/projects/${id}`,
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                            Accept: "application/json"
+                        },
+                        json: true,
+                        resolveWithFullResponse: true
+                    };
+                    pRequest
+                        .delete(options)
+                        .then(response => {
+                            countAllVideoDeletions += 1;
+
+                            if (response.statusCode == '202') {
+                                sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: id, msg: 'Projekt gelöscht' }));
+                            }
+                            callback();
+                        })
+                        .catch(err => {
+                            warnLog(`Fehler bei deleteProjects id=${id} status: ${err.statusCode}`);
+                            if (err.statusCode == '403') {
+                                sendStatus.sendMsg(JSON.stringify({ type: 'delstat', project: id, msg: 'Projekt nicht auf Simplex' }));
+                            }
+                            callback();
+                        });
+                }).catch((err) => {
+                    warnLog(`Fehler bei Delete-Video Methode (Token) ${err}`);
+                    resolve();
                 });
+            }
 
 
 

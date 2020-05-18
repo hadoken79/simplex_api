@@ -8,10 +8,10 @@ services:
       - 80:3000
       - 8080:8080
     volumes:
-      #- /media/linus/70DE-6DBF1:/home/app/storage
+      - /home/linus/run:/home/app/storage
       #- ./:/home/app
-      - /media/linus/WEBARCHIV:/home/app/storage
-      #windowsmount all other volumes need to be disabled
+      #- /media/linus/WEBARCHIV:/home/app/storage
+      # example of windowsmount
       #- E:\\:/home/app/storage
     
     #stdin_open: true
