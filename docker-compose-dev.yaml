@@ -5,10 +5,10 @@ services:
     container_name: node-docker
     restart: always
     ports:
-      - 80:3000
-      - 8080:8080
-    volumes:
-      - ./:/home/app
+      - 3000:3000
+      - 3001:3001
+   # volumes:
+      # - ./:/home/app
       #- /media/linus/WEBARCHIV:/home/app/storage
       #- /media/hadoken/speicher:/home/app/storage
       #- /media/linus/70DE-6DBF:/home/app/storage

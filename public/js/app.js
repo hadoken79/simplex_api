@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", event => {
 
     //Verbindung mit Websocketserver.js Port 8080 (nativ html5)
-    let ws = new WebSocket('ws://localhost:8080');
+    let ws = new WebSocket('ws://dispo.telebasel.ch:3001');
     ws.onopen = () => {
         console.log('websocket connected ...');
         ws.send('client listening');

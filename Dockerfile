@@ -9,8 +9,8 @@ RUN npm install --quiet
 COPY . .
 
 
-EXPOSE 3000
-EXPOSE 8080
+EXPOSE 3001
+EXPOSE 3002
 
 #for production switch to the second command
 #CMD ["npm", "run", "dev"]
