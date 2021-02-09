@@ -365,6 +365,7 @@ const downloadVideo = (projectId, path, fileName, total) => {
                                 percent: state.percent,
                             };
                             sendStatus.sendMsg(JSON.stringify(status));
+
                         })
                         .on('error', (err) => {
                             warnLog('Fehler bei Download ' + projectId);
@@ -603,7 +604,7 @@ const downloadAllData = async (maxDate, folder) => {
                     console.log('Projektinventar erstellt');
                 }
             );
-            /*
+            
         async.eachLimit(workFolderInventory, 10, (projectId, done) => {
 
             getProjectChannel(projectId)
@@ -639,7 +640,7 @@ const downloadAllData = async (maxDate, folder) => {
             }
 
         })
-*/
+
         }
 
         for (let i = 0; i < pages; i++) {

@@ -80,7 +80,7 @@ server.listen(port, () => {
     console.log('Server now listening at containerPort ' + port);
 });
 
-let wss = new webSocketServer({ port: 3001 });
+let wss = new webSocketServer({ port: 8080 });
 //wss.setMaxListeners(1000);
 
 wss.on('connection', (ws) => {

@@ -8,9 +8,9 @@ services:
       - 80:3000
       - 8080:8080
     volumes:
-      - /home/linus/run:/home/app/storage
+      - /home/hadoken/run:/home/app/storage
       #- ./:/home/app
-      #- /media/linus/WEBARCHIV:/home/app/storage
+      #- /media/linus/WEBARCHIV:/home/app/storage #mount local HDD to Server
       # example of windowsmount
       #- E:\\:/home/app/storage
     
