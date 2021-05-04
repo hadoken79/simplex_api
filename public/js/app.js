@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", event => {
 
-    //Verbindung mit Websocketserver.js Port 8080 (nativ html5)
-    //let ws = new WebSocket('ws://dispo.telebasel.ch:8080');//alternative use 3001. needs to be set also in server.js and in composeFile
+    //Verbindung mit Websocketserver.js Port 3001 (nativ html5)
+  // muss auch in server.js une composeFile gesetzt werden
     let ws = new WebSocket('ws://dispo.telebasel.ch:3001');
     ws.onopen = () => {
         console.log('websocket connected ...');
