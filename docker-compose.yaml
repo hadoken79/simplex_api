@@ -5,12 +5,12 @@ services:
     container_name: node-docker
     restart: always
     ports:
-      - 80:3000
-      - 8080:8080
+      - 3000:3000
+      - 3001:3001
     volumes:
-      - /home/hadoken/run:/home/app/storage
+      #- /home/$USER/run:/home/app/storage
       #- ./:/home/app
-      #- /media/linus/WEBARCHIV:/home/app/storage #mount local HDD to Server
+      - /media/videoarchiv:/home/app/storage #mount local HDD to Server
       # example of windowsmount
       #- E:\\:/home/app/storage
     
