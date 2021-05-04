@@ -8,10 +8,8 @@ services:
       - 3000:3000
       - 3001:3001
     volumes:
-      # - ./:/home/app
-      #- /media/linus/WEBARCHIV:/home/app/storage
-      - /media/hadoken/speicher:/home/app/storage
-      #- /media/linus/70DE-6DBF:/home/app/storage
+      - ~/Downloads/test:/home/app/storage
+      #- /media/hadoken/speicher:/home/app/storage
       # windowsmount all other volumes need to be disabled
       #- E:\\:/home/app/storage
     
